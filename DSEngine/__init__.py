@@ -1,4 +1,5 @@
 import pygame as pg
 from .types import *
 
-print("Hello from the Dark Snake team")
+pg.init()
+print("Hello from the Dark Snake Team")
