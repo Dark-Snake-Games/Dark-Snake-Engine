@@ -1,5 +1,5 @@
 import pygame
-from DSEngine.types import *
+from DSEngine.etypes import *
 from pygame.locals import *
 
 class Spritesheet:
