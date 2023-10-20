@@ -71,6 +71,7 @@ class Rect2D(Type2D):
 class Image2D(Type2D):
     def __init__(self, filename: str, layer=1, position=pygame.Vector2(0.0, 0.0)):#, size=pygame.Vector2(0.0, 0.0)):
         self.sprite = pygame.sprite.Sprite()
+        self.debug = False
         self.layer = layer
         self.position = position
         self.name = filename
@@ -86,6 +87,8 @@ class Image2D(Type2D):
     
     def render(self, window: Window):
         window.surface.blit(self.image, self.rect)
+        if self.debug:
+            pygame.draw.rect(window.surface, (255, 255, 255), self.rect)
         super().render(window)
         #print("Sprite2D render done")
     
