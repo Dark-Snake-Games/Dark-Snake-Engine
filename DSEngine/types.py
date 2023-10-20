@@ -1,14 +1,17 @@
 import pygame
+from datetime import timedelta
 
 def key_to_scancode(key: str):
     return pygame.key.key_code(key)
 
 class Window:
-    def __init__(self, title="DSEngine Window", size: tuple=(800, 600), bg: tuple=(0, 0, 0)):
+    def __init__(self, fps=60, title="DSEngine Window", size: tuple=(800, 600), bg: tuple=(0, 0, 0)):
         self.layers = {1:[], 2:[], 3:[], 4:[], 5:[], 6:[], 7:[], 8:[], 9:[], 10:[], "GUI":[]}
         print("Window init")
-        self.title, self.size, self.bg = title, size, bg
+        self.fps, self.title, self.size, self.bg = fps, title, size, bg
         self.surface = pygame.display.set_mode(size)
+        self.clock = pygame.time.Clock()
+        self.delta = 0
         pygame.display.set_caption(title)
         self.bg_rect = pygame.Rect(0, 0, size[0], size[1])
         if bg != (0, 0, 0):
@@ -18,6 +21,7 @@ class Window:
     
     def frame(self):
         global keys
+        self.delta = self.clock.tick(self.fps)
         pygame.draw.rect(self.surface, self.bg, self.bg_rect)
         for event in pygame.event.get():      
             if event.type == pygame.QUIT: 
@@ -67,6 +71,7 @@ class Rect2D(Type2D):
 class Image2D(Type2D):
     def __init__(self, filename: str, layer=1, position=pygame.Vector2(0.0, 0.0)):#, size=pygame.Vector2(0.0, 0.0)):
         self.sprite = pygame.sprite.Sprite()
+        self.debug = False
         self.layer = layer
         self.position = position
         self.name = filename
@@ -82,6 +87,8 @@ class Image2D(Type2D):
     
     def render(self, window: Window):
         window.surface.blit(self.image, self.rect)
+        if self.debug:
+            pygame.draw.rect(window.surface, (255, 255, 255), self.rect)
         super().render(window)
         #print("Sprite2D render done")
     
