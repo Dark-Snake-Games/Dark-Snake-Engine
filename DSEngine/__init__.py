@@ -1,13 +1,14 @@
 __version__ = "0.0.1-alpha"
 __license__ = "MIT"
 
-import os
-import sys
-os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
-import pygame as pg
-from .etypes import *
-from .animated import *
-from .gui import *
+import contextlib
+
+with contextlib.redirect_stdout(None):
+  import sys
+  import pygame as pg
+  from .etypes import *
+  from .animated import *
+  from .gui import *
 
 pg.init()
 
