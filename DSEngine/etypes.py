@@ -5,13 +5,14 @@ def key_to_scancode(key: str):
     return pygame.key.key_code(key)
 
 class Window:
-    def __init__(self, fps=60, title="DSEngine Window", size: tuple=(800, 600), bg: tuple=(0, 0, 0)):
+    def __init__(self, fps=60, title="DSEngine Window", size: tuple=(800, 600), bg: tuple=(0, 0, 0), icon=pygame.image.load("default.icon.png")):
         self.layers = {1:[], 2:[], 3:[], 4:[], 5:[], 6:[], 7:[], 8:[], 9:[], 10:[], "GUI":[]}
         print("Window init")
-        self.fps, self.title, self.size, self.bg = fps, title, size, bg
+        self.fps, self.title, self.size, self.bg, self.icon = fps, title, size, bg, icon
         self.surface = pygame.display.set_mode(size)
         self.clock = pygame.time.Clock()
         self.delta = 0
+        pygame.display.set_icon(icon)
         pygame.display.set_caption(title)
         self.bg_rect = pygame.Rect(0, 0, size[0], size[1])
         if bg != (0, 0, 0):
