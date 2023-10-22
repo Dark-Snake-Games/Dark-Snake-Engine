@@ -1,5 +1,4 @@
 import pygame
-from datetime import timedelta
 
 def key_to_scancode(key: str):
     return pygame.key.key_code(key)
@@ -45,6 +44,7 @@ class Type2D:
     
     def init(self, window: Window):
         window.layers[self.layer].append(self)
+        self.window = window
     
     def render(self, window: Window):
         #print("Type2D render done on layer", self.layer)
@@ -53,15 +53,43 @@ class Type2D:
 class Rect2D(Type2D):
     def __init__(self, layer=1, position=pygame.Vector2(0.0, 0.0), color=(255, 255, 255), size=pygame.Vector2(100.0, 100.0)):
         self.sprite = pygame.sprite.Sprite()
+        self.window = None
         self.layer = layer
         self.position = position
         self.color = color
         self.size = size
         self.rect = pygame.Rect(position.x, position.y, position.x+size.x, position.x+size.y)
+        self.collision_sides = {"left":False, "right":False,
+                                "bottom":False, "top":False}
         super().__init__(layer=self.layer, position=self.position)
         #print("Initialized super()")
     
+    def detect_collisions(self):
+        self.collision_sides = {"left":False, "right":False,
+                                "bottom":False, "top":False}
+        for j in range(1, 10+1):
+            for i in self.window.layers[j]:
+                side = self.get_collision_side(i)
+                if side != None:
+                    self.collision_sides[side] = True
+    
+    def get_collision_side(self, rect2):
+        if self.rect.colliderect(rect2.rect):
+            dr = abs(self.rect.right - rect2.rect.left)
+            dl = abs(self.rect.left - rect2.rect.right)
+            db = abs(self.rect.bottom - rect2.rect.top)
+            dt = abs(self.rect.top - rect2.rect.bottom)
+            if min(dl, dr) < min(dt, db):
+                direction = "left" if dl < dr else "right"
+            else:
+                direction = "bottom" if db < dt else "top"
+            return direction
+        else:
+            return None
+    
     def render(self, window: Window):
+        self.window = window
+        self.detect_collisions()
         pygame.draw.rect(window.surface, self.color, self.rect)
         super().render(window)
         #print("Sprite2D render done")
@@ -69,7 +97,7 @@ class Rect2D(Type2D):
     def move(self, vec: pygame.Vector2):
         self.rect = self.rect.move(vec.x, vec.y)
 
-class Image2D(Type2D):
+class Image2D(Rect2D):
     def __init__(self, filename: str, layer=1, position=pygame.Vector2(0.0, 0.0)):#, size=pygame.Vector2(0.0, 0.0)):
         self.sprite = pygame.sprite.Sprite()
         self.debug = False
@@ -89,13 +117,9 @@ class Image2D(Type2D):
     def render(self, window: Window):
         window.surface.blit(self.image, self.rect)
         if self.debug:
-            pygame.draw.rect(window.surface, (255, 255, 255), self.rect)
-        super().render(window)
+            #pygame.draw.rect(window.surface, (255, 255, 255), self.rect)
+            super().render(window)
         #print("Sprite2D render done")
-    
-    def move(self, vec: pygame.Vector2):
-        #self.image = self.image.move(vec.x, vec.y)
-        self.rect = self.rect.move(vec.x, vec.y)
 
 class AudioPlayer:
     def __init__(self, file: str) -> None:
