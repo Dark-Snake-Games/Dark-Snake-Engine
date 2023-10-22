@@ -16,12 +16,13 @@ type2d.init(window)
 rect.init(window)
 sprite.init(window)
 while window.running:
-    if not pygame.mixer.music.get_busy():
+    print(sprite.collision_sides)
+    if not pygame.mixer.music.get_busy() and not sprite.playing:
+        sprite.play_sheet("normal")
         music.play()
     keys = window.frame()
     acc = Vector2(0.0, 0.0)
     acc.x = (keys[key_to_scancode("d")]-keys[key_to_scancode("a")])*window.delta
     acc.y = (keys[key_to_scancode("s")]-keys[key_to_scancode("w")])*window.delta
-    if not sprite.playing: #and acc != Vector2(0.0, 0.0): ...
-        sprite.play_sheet("normal")
+        
     sprite.move(acc)
