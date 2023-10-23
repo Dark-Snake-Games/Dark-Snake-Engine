@@ -60,7 +60,7 @@ class DialougeBox(Rect2D):
             self.remove(window)
             # self.button.remove(window)
         sx, sy = window.size
-        self.button.position = pygame.Vector2(sx, (self.position.y+(sy-self.position.y))-20)
+        #self.button.position = pygame.Vector2(sx, (self.position.y+(sy-self.position.y))-20)
         self.color_rect = pygame.Rect(self.position.x, self.position.y, sx, self.position.y+(sy-self.position.x))
         pygame.draw.rect(window.surface, (0, 0, 0), self.color_rect)
         window.surface.blit(self.text_surface, (self.position.x, self.position.y+50))
