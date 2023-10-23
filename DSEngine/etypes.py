@@ -1,3 +1,4 @@
+import os
 import pygame
 from datetime import timedelta
 
@@ -5,10 +6,10 @@ def key_to_scancode(key: str):
     return pygame.key.key_code(key)
 
 class Window:
-    def __init__(self, fps=60, title="DSEngine Window", size: tuple=(800, 600), bg: tuple=(0, 0, 0), icon=pygame.image.load("default.icon.png")):
+    def __init__(self, fps=60, title="DSEngine Window", size: tuple=(800, 600), bg: tuple=(0, 0, 0), icon=pygame.image.load(os.path.join(os.path.dirname(__file__), "assets", "default.icon.png"))):
         self.layers = {1:[], 2:[], 3:[], 4:[], 5:[], 6:[], 7:[], 8:[], 9:[], 10:[], "GUI":[]}
         print("Window init")
-        self.fps, self.title, self.size, self.bg, self.icon = fps, title, size, bg, icon
+        self.fps, self.title, self.size, self.bg, self.icon = fps, title, size, bg, icon 
         self.surface = pygame.display.set_mode(size)
         self.clock = pygame.time.Clock()
         self.delta = 0
