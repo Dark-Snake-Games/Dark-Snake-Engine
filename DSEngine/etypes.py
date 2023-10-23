@@ -11,6 +11,7 @@ class Window:
         self.surface = pygame.display.set_mode(size)
         self.clock = pygame.time.Clock()
         self.delta = 0
+        self.pressed_keys = pygame.key.get_pressed()
         pygame.display.set_icon(icon)
         pygame.display.set_caption(title)
         self.bg_rect = pygame.Rect(0, 0, size[0], size[1])
@@ -38,7 +39,8 @@ class Window:
             i.render(self)
         pygame.display.flip()
         pygame.display.update()
-        return pygame.key.get_pressed()
+        self.pressed_keys = pygame.key.get_pressed()
+        return self.pressed_keys
 
 class Type2D:
     def __init__(self, layer=1, position=pygame.Vector2(0.0, 0.0), rotation=0.0):
@@ -49,6 +51,10 @@ class Type2D:
     def init(self, window: Window):
         window.layers[self.layer].append(self)
         self.window = window
+    
+    def remove(self, window: Window):
+        window.layers[self.layer].remove(self)
+        self.window = None
     
     def render(self, window: Window):
         #print("Type2D render done on layer", self.layer)
