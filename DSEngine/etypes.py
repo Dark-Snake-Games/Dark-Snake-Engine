@@ -19,6 +19,10 @@ class Window:
             pygame.display.flip()
         self.running = True
     
+    def get_mouse_pos(self):
+        x, y = pygame.mouse.get_pos()
+        return pygame.Vector2(x, y)
+    
     def frame(self):
         global keys
         self.delta = self.clock.tick(self.fps)
@@ -58,7 +62,7 @@ class Rect2D(Type2D):
         self.position = position
         self.color = color
         self.size = size
-        self.rect = pygame.Rect(position.x, position.y, position.x+size.x, position.x+size.y)
+        self.rect = pygame.Rect(position.x, position.y, position.x+size.x, position.y+size.y)
         self.collision_sides = {"left":False, "right":False,
                                 "bottom":False, "top":False}
         super().__init__(layer=self.layer, position=self.position)
@@ -69,9 +73,10 @@ class Rect2D(Type2D):
                                 "bottom":False, "top":False}
         for j in range(1, 10+1):
             for i in self.window.layers[j]:
-                side = self.get_collision_side(i)
-                if side != None:
-                    self.collision_sides[side] = True
+                if i != self:
+                    side = self.get_collision_side(i)
+                    if side != None:
+                        self.collision_sides[side] = True
     
     def get_collision_side(self, rect2):
         if self.rect.colliderect(rect2.rect):

@@ -1,50 +1,24 @@
-import pygame as pg
-from DSEngine.etypes import Type2D, Window
+import pygame
+from DSEngine.etypes import Rect2D, Window
 from pygame.locals import *
+pygame.font.init()
 
-class InputBox(Type2D):
-    def __init__(self, layer="GUI", position=pg.Vector2(0.0, 0.0), size=pg.Vector2(100.0, 100.0), text=''):
-        self.COLOR_INACTIVE = pg.Color('lightskyblue3')
-        self.COLOR_ACTIVE = pg.Color('dodgerblue2')
-        self.FONT = pg.font.Font(None, 32)
-        self.rect = pg.Rect(position.x, position.y, position.x+size.x, position.x+size.y)
-        self.position = position
-        self.color = self.COLOR_INACTIVE
-        self.text = text
+class Button(Rect2D):
+    def __init__(self, text: str, layer=1, position=pygame.Vector2(0.0, 0.0)):#, size=pygame.Vector2(0.0, 0.0)):
+        self.debug = False
         self.layer = layer
-        self.txt_surface = self.FONT.render(text, True, self.color)
+        self.position = position
+        #self.rect = pygame.Rect(position.x, position.y, position.x+size.x, position.x+size.y)
+        self.text = text
+        self.font = pygame.font.SysFont('Comic Sans MS', 30)
+        self.text_surface = self.font.render(self.text, False, (255, 255, 255))
+        self.color_rect = self.text_surface.get_rect()
+        #self.rect = self.text_surface.get_rect()
         super().__init__(layer=self.layer, position=self.position)
-        self.active = False
-
-    def handle_event(self, event):
-        if event.type == pg.MOUSEBUTTONDOWN:
-            # If the user clicked on the input_box rect.
-            if self.rect.collidepoint(event.pos):
-                # Toggle the active variable.
-                self.active = not self.active
-            else:
-                self.active = False
-            # Change the current color of the input box.
-            self.color = self.COLOR_ACTIVE if self.active else self.COLOR_INACTIVE
-        if event.type == pg.KEYDOWN:
-            if self.active:
-                if event.key == pg.K_RETURN:
-                    print(self.text)
-                    self.text = ''
-                elif event.key == pg.K_BACKSPACE:
-                    self.text = self.text[:-1]
-                else:
-                    self.text += event.unicode
-                # Re-render the text.
-                self.txt_surface = self.FONT.render(self.text, True, self.color)
-
-    def update(self, window: Window):
-        # Resize the box if the text is too long.
-        pass
-
+        #print("Initialized super()")
+    
     def render(self, window: Window):
-        width = max(200, self.txt_surface.get_width()+10)
-        self.rect.w = width
-        super().render(window)
-        window.surface.blit(self.txt_surface, (self.rect.x+5, self.rect.y+5))
-        pg.draw.rect(window.surface, self.color, self.rect, 2)
+        #super().render(window)
+        pygame.draw.rect(window.surface, (0, 0, 0), self.color_rect)
+        window.surface.blit(self.text_surface, (self.position.x, self.position.y))
+        #print("Sprite2D render done")
