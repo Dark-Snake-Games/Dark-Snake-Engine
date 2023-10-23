@@ -16,7 +16,6 @@ type2d.init(window)
 rect.init(window)
 sprite.init(window)
 while window.running:
-    print(sprite.collision_sides)
     if not pygame.mixer.music.get_busy() and not sprite.playing:
         sprite.play_sheet("normal")
         music.play()
