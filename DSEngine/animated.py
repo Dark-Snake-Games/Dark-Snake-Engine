@@ -16,7 +16,7 @@ class AnimationSheet:
         self.sheets = spritesheets
         self.default = default
 
-class AnimatedSprite2D(Type2D):
+class AnimatedSprite2D(Rect2D):
     def __init__(self, sheet: AnimationSheet, layer=1, position=pygame.Vector2(0.0, 0.0)):#, size=pygame.Vector2(0.0, 0.0)):
         self.sprite = pygame.sprite.Sprite()
         self.debug = False
@@ -52,7 +52,7 @@ class AnimatedSprite2D(Type2D):
         window.surface.blit(self.image, self.rect)
         if self.debug:
             pygame.draw.rect(window.surface, (255, 255, 255), self.rect)
-        super().render(window)
+            super().render(window)
     
     def move(self, vec: pygame.Vector2):
         self.rect = self.rect.move(vec.x, vec.y)
