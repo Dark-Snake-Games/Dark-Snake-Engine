@@ -132,6 +132,20 @@ class Image2D(Rect2D):
             super().render(window)
         #print("Sprite2D render done")
 
+class AudioManager:
+    def __init__(self, **tracks):
+        self.tracks = {}
+        for i in tracks.keys():
+            if type(tracks[i]) == AudioPlayer:
+                self.tracks[i] = tracks[i]
+    
+    def play(self, track):
+        try:
+            self.tracks[track].play()
+            return 0
+        except KeyError:
+            return -1
+
 class AudioPlayer:
     def __init__(self, file: str) -> None:
         pygame.mixer.music.load(file)
