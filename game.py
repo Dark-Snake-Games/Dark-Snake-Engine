@@ -30,14 +30,14 @@ def scp_999_scene():
     window = Window(fps=120, size=(1280, 720), bg=(100, 100, 100))
     audio_man = AudioManager()
     text = Text2D("SCP-999", position=Vector2(550, 0))
+    scp = Image2D("Test.png", position=Vector2(640, 360))
     text.init(window)
+    scp.init(window)
     while window.running:
         keys = window.frame()
         if keys[27]:
-            #exit(1)
             return 1
         else:
-            #print("Nothing pressed")
             pass
 
 if __name__ == "__main__":
