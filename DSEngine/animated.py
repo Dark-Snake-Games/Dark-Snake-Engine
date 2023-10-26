@@ -27,6 +27,7 @@ class AnimatedSprite2D(Rect2D):
         self.curent_frame = 0
         self.sheet_length = -1
         self.playing = False
+        self.moving_towards = False
         self.image = self.sprites.default.image
         self.rect = self.image.get_rect()
         self.image = self.image.convert_alpha()
@@ -38,7 +39,20 @@ class AnimatedSprite2D(Rect2D):
         self.sheet_length = len(self.current_sheet.sheet)
         self.playing = True
     
+    def move_towards(self, pos=pygame.Vector2()):
+        self.steps = max(abs(pos.x-self.position.x), abs(pos.y-self.position.y))
+        self.stepx = float(pos.x-self.position.x)/self.steps
+        self.stepy = float(pos.y-self.position.y)/self.steps
+        self.step = 0
+        self.moving_towards = True
+    
     def render(self, window: Window):
+        if self.moving_towards:
+            vel = pygame.Vector2(self.stepx, self.stepy)
+            self.move(vel)
+            self.step += 1
+            print(self.steps, self.step)
+            if self.step >= self.steps: self.moving_towards = False
         if self.current_sheet != self.sprites.sheets and self.frame <= self.sheet_length-1:
             self.image = self.current_sheet.sheet[self.frame].image
             self.frame+=1
