@@ -3,8 +3,28 @@ from DSEngine.etypes import Rect2D, Window, key_to_scancode
 from pygame.locals import *
 pygame.font.init()
 
+class Text2D(Rect2D):
+    def __init__(self, text: str, layer=1, position=pygame.Vector2(0.0, 0.0), font=pygame.font.SysFont('freesans', 40)):#, size=pygame.Vector2(0.0, 0.0)):
+        self.debug = False
+        self.layer = layer
+        self.position = position
+        self.text = text
+        self.font = font
+        self.text_surface = self.font.render(self.text, False, (255, 255, 255))
+        self.color_rect = self.text_surface.get_rect()
+        self.color_rect.topleft = (position.x-(self.color_rect.size[0]/2), position.y-(self.color_rect.size[1]/2))
+        #self.rect = self.text_surface.get_rect()
+        super().__init__(layer=self.layer, position=self.position)
+        #print("Initialized super()")
+    
+    def render(self, window: Window):
+        if self.debug:
+            pygame.draw.rect(window.surface, (0, 0, 0), self.color_rect)
+        window.surface.blit(self.text_surface, (self.position.x, self.position.y))
+        #print("Sprite2D render done")
+
 class Button(Rect2D):
-    def __init__(self, text: str, layer=1, position=pygame.Vector2(0.0, 0.0), font = pygame.font.SysFont('Open Sans', 40)):#, size=pygame.Vector2(0.0, 0.0)):
+    def __init__(self, text: str, layer=1, position=pygame.Vector2(0.0, 0.0), font = pygame.font.SysFont('freesans', 40)):#, size=pygame.Vector2(0.0, 0.0)):
         self.debug = False
         self.layer = layer
         self.position = position
@@ -15,6 +35,7 @@ class Button(Rect2D):
         self.font = font
         self.text_surface = self.font.render(self.text, False, (255, 255, 255))
         self.color_rect = self.text_surface.get_rect()
+        self.color_rect.topleft = (position.x ,position.y)
         #self.rect = self.text_surface.get_rect()
         super().__init__(layer=self.layer, position=self.position)
         #print("Initialized super()")
@@ -34,7 +55,7 @@ class Button(Rect2D):
         #print("Sprite2D render done")
 
 class DialougeBox(Rect2D):
-    def __init__(self, character_name: str, text: str, layer=1, position=pygame.Vector2(0.0, 0.0), font_name = pygame.font.SysFont('Open Sans', 35), font_text = pygame.font.SysFont('Impact', 25)):#, size=pygame.Vector2(0.0, 0.0)):
+    def __init__(self, character_name: str, text: str, layer=1, position=pygame.Vector2(0.0, 0.0), font_name = pygame.font.SysFont('freesans', 35), font_text = pygame.font.SysFont('Impact', 25)):#, size=pygame.Vector2(0.0, 0.0)):
         self.debug = False
         self.layer = layer
         self.position = position

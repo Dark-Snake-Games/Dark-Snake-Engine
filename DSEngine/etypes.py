@@ -1,4 +1,4 @@
-import pygame
+import pygame, sys
 
 def key_to_scancode(key: str):
     return pygame.key.key_code(key)
@@ -31,6 +31,8 @@ class Window:
         for event in pygame.event.get():      
             if event.type == pygame.QUIT: 
                 self.running = False
+                pygame.quit()
+                sys.exit()
         for j in range(1, 10+1):
             #print(j)
             for i in self.layers[j]:
