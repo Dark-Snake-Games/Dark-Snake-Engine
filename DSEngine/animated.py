@@ -69,5 +69,6 @@ class AnimatedSprite2D(Rect2D):
             super().render(window)
     
     def move(self, vec: pygame.Vector2):
-        self.rect.move_ip(vec.x, vec.y)
+        #self.rect.move_ip(vec.x, vec.y)
         self.position = pygame.Vector2(self.position.x+vec.x, self.position.y+vec.y)
+        self.rect.topleft = (self.position.x, self.position.y)

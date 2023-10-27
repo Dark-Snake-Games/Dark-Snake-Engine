@@ -2,6 +2,7 @@ from DSEngine import *
 from pygame import Vector2
 from pygame.display import update
 from sys import exit
+from random import randint
 default_title="Project: SCP"
 
 def main_menu():
@@ -31,6 +32,7 @@ def main_menu():
 def scp_999_scene():
     global default_title
     window = Window(title=default_title, fps=120, size=(1280, 720), bg=(100, 100, 100))
+    last_secs = 0
     audio_man = AudioManager()
     text = Text2D("SCP-999", position=Vector2(550, 0))
     animations = AnimationSheet(default=Image2D("Test.png"))
@@ -39,11 +41,15 @@ def scp_999_scene():
     scp.init(window)
     scp.move_towards(Vector2(0, 0))
     while window.running:
+        if int(window.seconds-last_secs) >= 10:
+            rx = randint(0, window.size[0])
+            ry = randint(0, window.size[1])
+            pos = Vector2(rx, ry)
+            scp.move_towards(pos)
+            last_secs = int(window.seconds)
         keys = window.frame()
         if keys[27]:
             return 1
-        else:
-            pass
 
 if __name__ == "__main__":
     main_menu()
