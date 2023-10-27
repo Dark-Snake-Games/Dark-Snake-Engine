@@ -11,6 +11,8 @@ class Window:
         self.surface = pygame.display.set_mode(size)
         self.clock = pygame.time.Clock()
         self.delta = 0
+        self.elapsed_ms = 0
+        self.seconds = 0
         self.pressed_keys = pygame.key.get_pressed()
         pygame.display.set_icon(icon)
         pygame.display.set_caption(title)
@@ -27,6 +29,8 @@ class Window:
     def frame(self):
         global keys
         self.delta = self.clock.tick(self.fps)
+        self.elapsed_ms += self.delta
+        self.seconds = self.elapsed_ms/100
         pygame.draw.rect(self.surface, self.bg, self.bg_rect)
         for event in pygame.event.get():      
             if event.type == pygame.QUIT: 
@@ -108,7 +112,8 @@ class Rect2D(Type2D):
         #print("Sprite2D render done")
     
     def move(self, vec: pygame.Vector2):
-        self.rect = self.rect.move(vec.x, vec.y)
+        #self.rect = self.rect.move(vec.x, vec.y)
+        self.rect.move_ip(vec.x, vec.y)
 
 class Image2D(Rect2D):
     def __init__(self, filename: str, layer=1, position=pygame.Vector2(0.0, 0.0)):#, size=pygame.Vector2(0.0, 0.0)):
