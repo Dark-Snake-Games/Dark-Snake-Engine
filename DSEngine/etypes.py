@@ -63,7 +63,6 @@ class Type2D:
         self.window = None
     
     def render(self, window: Window):
-        #print("Type2D render done on layer", self.layer)
         pass
 
 class Rect2D(Type2D):
@@ -74,11 +73,11 @@ class Rect2D(Type2D):
         self.position = position
         self.color = color
         self.size = size
+        self.prev_pos = self.position
         self.rect = pygame.Rect(position.x, position.y, position.x+size.x, position.y+size.y)
         self.collision_sides = {"left":False, "right":False,
                                 "bottom":False, "top":False}
         super().__init__(layer=self.layer, position=self.position)
-        #print("Initialized super()")
     
     def detect_collisions(self):
         self.collision_sides = {"left":False, "right":False,
@@ -109,11 +108,14 @@ class Rect2D(Type2D):
         self.detect_collisions()
         pygame.draw.rect(window.surface, self.color, self.rect)
         super().render(window)
-        #print("Sprite2D render done")
+    
+    def is_moving(self):
+        return self.prev_pos == self.position
     
     def move(self, vec: pygame.Vector2):
-        #self.rect = self.rect.move(vec.x, vec.y)
-        self.rect.move_ip(vec.x, vec.y)
+        self.position = pygame.Vector2(self.position.x+vec.x, self.position.y+vec.y)
+        self.rect.topleft = (self.position.x, self.position.y)
+        self.prev_pos = self.position
 
 class Image2D(Rect2D):
     def __init__(self, filename: str, layer=1, position=pygame.Vector2(0.0, 0.0)):#, size=pygame.Vector2(0.0, 0.0)):
@@ -123,21 +125,14 @@ class Image2D(Rect2D):
         self.position = position
         self.name = filename
         self.image = pygame.image.load(self.name)
-        #if size == pygame.Vector2(0.0, 0.0):
         self.rect = self.image.get_rect()
-            #print("Normal")
-        #else:
-        #    self.rect = pygame.Rect(position.x, position.y, position.x+size.x, position.x+size.y)
         self.image = self.image.convert_alpha()
         super().__init__(layer=self.layer, position=self.position)
-        #print("Initialized super()")
     
     def render(self, window: Window):
         window.surface.blit(self.image, self.rect)
         if self.debug:
-            #pygame.draw.rect(window.surface, (255, 255, 255), self.rect)
             super().render(window)
-        #print("Sprite2D render done")
 
 class AudioManager:
     def __init__(self, **tracks):

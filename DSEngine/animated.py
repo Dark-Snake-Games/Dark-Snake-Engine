@@ -51,11 +51,10 @@ class AnimatedSprite2D(Rect2D):
             vel = pygame.Vector2(self.stepx, self.stepy)
             self.move(vel)
             self.step += 1
-            print(self.position, self.stepy)
             if self.step >= self.steps: self.moving_towards = False
         if self.current_sheet != self.sprites.sheets and self.frame <= self.sheet_length-1:
             self.image = self.current_sheet.sheet[self.frame].image
-            self.frame+=1
+            self.frame += 1
             self.playing = True
         else:
             self.image = self.sprites.default.image
@@ -67,8 +66,3 @@ class AnimatedSprite2D(Rect2D):
         if self.debug:
             pygame.draw.rect(window.surface, (255, 255, 255), self.rect)
             super().render(window)
-    
-    def move(self, vec: pygame.Vector2):
-        #self.rect.move_ip(vec.x, vec.y)
-        self.position = pygame.Vector2(self.position.x+vec.x, self.position.y+vec.y)
-        self.rect.topleft = (self.position.x, self.position.y)
