@@ -9,6 +9,7 @@ with contextlib.redirect_stdout(None):
   from .etypes import *
   from .animated import *
   from .gui import *
+  from .saving import *
 
 pg.init()
 
