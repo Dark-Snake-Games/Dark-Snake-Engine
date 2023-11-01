@@ -5,7 +5,8 @@ def key_to_scancode(key: str):
 
 class Window:
     def __init__(self, fps=60, title="DSEngine Window", size: tuple=(800, 600), bg: tuple=(0, 0, 0), icon=pygame.image.load("default.icon.png")):
-        self.layers = {1:[], 2:[], 3:[], 4:[], 5:[], 6:[], 7:[], 8:[], 9:[], 10:[], "GUI":[]}
+        self.layers = {1:[], 2:[], 3:[], 4:[], 5:[], 6:[],
+                       7:[], 8:[], 9:[], 10:[], "GUI":[]}
         print("Window init")
         self.fps, self.title, self.size, self.bg, self.icon = fps, title, size, bg, icon
         self.surface = pygame.display.set_mode(size)
@@ -90,7 +91,7 @@ class Rect2D(Type2D):
                         self.collision_sides[side] = True
     
     def get_collision_side(self, rect2):
-        if self.rect.colliderect(rect2.rect):
+        if self.is_colliding_with(rect2):
             dr = abs(self.rect.right - rect2.rect.left)
             dl = abs(self.rect.left - rect2.rect.right)
             db = abs(self.rect.bottom - rect2.rect.top)
@@ -102,6 +103,9 @@ class Rect2D(Type2D):
             return direction
         else:
             return None
+    
+    def is_colliding_with(self, rect2: Type2D):
+        return self.rect.colliderect(rect2.rect)
     
     def render(self, window: Window):
         self.window = window

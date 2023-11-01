@@ -19,6 +19,7 @@ sprite.init(window)
 #print(audio_man.tracks)
 while window.running:
     keys = window.frame()
+    print(sprite.is_colliding_with(rect))
     acc = Vector2(0.0, 0.0)
     acc.x = (keys[key_to_scancode("d")]-keys[key_to_scancode("a")])*window.delta
     acc.y = (keys[key_to_scancode("s")]-keys[key_to_scancode("w")])*window.delta
