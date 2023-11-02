@@ -4,7 +4,14 @@ def key_to_scancode(key: str):
     return pygame.key.key_code(key)
 
 class Window:
-    def __init__(self, fps=60, title="DSEngine Window", size: tuple=(800, 600), bg: tuple=(0, 0, 0), icon=pygame.image.load("default.icon.png")):
+    def __init__(
+        self,
+        fps=60,
+        title="DSEngine Window",
+        size: tuple=(800, 600),
+        bg: tuple=(0, 0, 0),
+        icon=pygame.image.load("default.icon.png")
+    ) -> None:
         self.layers = {1:[], 2:[], 3:[], 4:[], 5:[], 6:[],
                        7:[], 8:[], 9:[], 10:[], "GUI":[]}
         print("Window init")
@@ -23,11 +30,11 @@ class Window:
             pygame.display.flip()
         self.running = True
     
-    def get_mouse_pos(self):
+    def get_mouse_pos(self) -> pygame.Vector2:
         x, y = pygame.mouse.get_pos()
         return pygame.Vector2(x, y)
     
-    def frame(self):
+    def frame(self) -> pygame.key.get_pressed():
         global keys
         self.delta = self.clock.tick(self.fps)
         self.elapsed_ms += self.delta
@@ -50,24 +57,35 @@ class Window:
         return self.pressed_keys
 
 class Type2D:
-    def __init__(self, layer=1, position=pygame.Vector2(0.0, 0.0), rotation=0.0):
+    def __init__(
+            self,
+            layer=1,
+            position=pygame.Vector2(0.0, 0.0),
+            rotation=0.0
+        ) -> None:
         self.layer = layer
         self.position = position
         self.rotation = rotation
     
-    def init(self, window: Window):
+    def init(self, window: Window) -> None:
         window.layers[self.layer].append(self)
         self.window = window
     
-    def remove(self, window: Window):
+    def remove(self, window: Window) -> None:
         window.layers[self.layer].remove(self)
         self.window = None
     
-    def render(self, window: Window):
+    def render(self, window: Window) -> None:
         pass
 
 class Rect2D(Type2D):
-    def __init__(self, layer=1, position=pygame.Vector2(0.0, 0.0), color=(255, 255, 255), size=pygame.Vector2(100.0, 100.0)):
+    def __init__(
+        self,
+        layer=1,
+        position=pygame.Vector2(0.0, 0.0),
+        color=(255, 255, 255),
+        size=pygame.Vector2(100.0, 100.0)
+    ) -> None:
         self.sprite = pygame.sprite.Sprite()
         self.window = None
         self.layer = layer
@@ -80,7 +98,7 @@ class Rect2D(Type2D):
                                 "bottom":False, "top":False}
         super().__init__(layer=self.layer, position=self.position)
     
-    def detect_collisions(self):
+    def detect_collisions(self) -> None:
         self.collision_sides = {"left":False, "right":False,
                                 "bottom":False, "top":False}
         for j in range(1, 10+1):
@@ -90,7 +108,7 @@ class Rect2D(Type2D):
                     if side != None:
                         self.collision_sides[side] = True
     
-    def get_collision_side(self, rect2):
+    def get_collision_side(self, rect2) -> (str, None):
         if self.is_colliding_with(rect2):
             dr = abs(self.rect.right - rect2.rect.left)
             dl = abs(self.rect.left - rect2.rect.right)
@@ -104,25 +122,25 @@ class Rect2D(Type2D):
         else:
             return None
     
-    def is_colliding_with(self, rect2: Type2D):
+    def is_colliding_with(self, rect2: Type2D) -> bool:
         return self.rect.colliderect(rect2.rect)
     
-    def render(self, window: Window):
+    def render(self, window: Window) -> None:
         self.window = window
         self.detect_collisions()
         pygame.draw.rect(window.surface, self.color, self.rect)
         super().render(window)
     
-    def is_moving(self):
+    def is_moving(self) -> bool:
         return self.prev_pos == self.position
     
-    def move(self, vec: pygame.Vector2):
+    def move(self, vec: pygame.Vector2) -> None:
         self.position = pygame.Vector2(self.position.x+vec.x, self.position.y+vec.y)
         self.rect.topleft = (self.position.x, self.position.y)
         self.prev_pos = self.position
 
 class Image2D(Rect2D):
-    def __init__(self, filename: str, layer=1, position=pygame.Vector2(0.0, 0.0)):#, size=pygame.Vector2(0.0, 0.0)):
+    def __init__(self, filename: str, layer=1, position=pygame.Vector2(0.0, 0.0)) -> None:#, size=pygame.Vector2(0.0, 0.0)):
         self.sprite = pygame.sprite.Sprite()
         self.debug = False
         self.layer = layer
@@ -133,19 +151,19 @@ class Image2D(Rect2D):
         self.image = self.image.convert_alpha()
         super().__init__(layer=self.layer, position=self.position)
     
-    def render(self, window: Window):
+    def render(self, window: Window) -> None:
         window.surface.blit(self.image, self.rect)
         if self.debug:
             super().render(window)
 
 class AudioManager:
-    def __init__(self, **tracks):
+    def __init__(self, **tracks) -> None:
         self.tracks = {}
         for i in tracks.keys():
             if type(tracks[i]) == AudioPlayer:
                 self.tracks[i] = tracks[i]
     
-    def play(self, track):
+    def play(self, track) -> int:
         try:
             self.tracks[track].play()
             return 0
@@ -156,5 +174,5 @@ class AudioPlayer:
     def __init__(self, file: str) -> None:
         pygame.mixer.music.load(file)
     
-    def play(self):
+    def play(self) -> None:
         pygame.mixer.music.play()
