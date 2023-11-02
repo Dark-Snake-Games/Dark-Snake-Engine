@@ -1,17 +1,19 @@
-import os
-import pygame
+import pygame, sys
 
 def key_to_scancode(key: str):
     return pygame.key.key_code(key)
 
 class Window:
-    def __init__(self, fps=60, title="DSEngine Window", size: tuple=(800, 600), bg: tuple=(0, 0, 0), icon=pygame.image.load(os.path.join(os.path.dirname(__file__), "assets", "default.icon.png"))):
-        self.layers = {1:[], 2:[], 3:[], 4:[], 5:[], 6:[], 7:[], 8:[], 9:[], 10:[], "GUI":[]}
+    def __init__(self, fps=60, title="DSEngine Window", size: tuple=(800, 600), bg: tuple=(0, 0, 0), icon=pygame.image.load("default.icon.png")):
+        self.layers = {1:[], 2:[], 3:[], 4:[], 5:[], 6:[],
+                       7:[], 8:[], 9:[], 10:[], "GUI":[]}
         print("Window init")
-        self.fps, self.title, self.size, self.bg, self.icon = fps, title, size, bg, icon 
+        self.fps, self.title, self.size, self.bg, self.icon = fps, title, size, bg, icon
         self.surface = pygame.display.set_mode(size)
         self.clock = pygame.time.Clock()
         self.delta = 0
+        self.elapsed_ms = 0
+        self.seconds = 0
         self.pressed_keys = pygame.key.get_pressed()
         pygame.display.set_icon(icon)
         pygame.display.set_caption(title)
@@ -28,10 +30,14 @@ class Window:
     def frame(self):
         global keys
         self.delta = self.clock.tick(self.fps)
+        self.elapsed_ms += self.delta
+        self.seconds = self.elapsed_ms/100
         pygame.draw.rect(self.surface, self.bg, self.bg_rect)
         for event in pygame.event.get():      
             if event.type == pygame.QUIT: 
                 self.running = False
+                pygame.quit()
+                sys.exit()
         for j in range(1, 10+1):
             #print(j)
             for i in self.layers[j]:
@@ -58,7 +64,6 @@ class Type2D:
         self.window = None
     
     def render(self, window: Window):
-        #print("Type2D render done on layer", self.layer)
         pass
 
 class Rect2D(Type2D):
@@ -69,11 +74,11 @@ class Rect2D(Type2D):
         self.position = position
         self.color = color
         self.size = size
+        self.prev_pos = self.position
         self.rect = pygame.Rect(position.x, position.y, position.x+size.x, position.y+size.y)
         self.collision_sides = {"left":False, "right":False,
                                 "bottom":False, "top":False}
         super().__init__(layer=self.layer, position=self.position)
-        #print("Initialized super()")
     
     def detect_collisions(self):
         self.collision_sides = {"left":False, "right":False,
@@ -86,7 +91,7 @@ class Rect2D(Type2D):
                         self.collision_sides[side] = True
     
     def get_collision_side(self, rect2):
-        if self.rect.colliderect(rect2.rect):
+        if self.is_colliding_with(rect2):
             dr = abs(self.rect.right - rect2.rect.left)
             dl = abs(self.rect.left - rect2.rect.right)
             db = abs(self.rect.bottom - rect2.rect.top)
@@ -99,15 +104,22 @@ class Rect2D(Type2D):
         else:
             return None
     
+    def is_colliding_with(self, rect2: Type2D):
+        return self.rect.colliderect(rect2.rect)
+    
     def render(self, window: Window):
         self.window = window
         self.detect_collisions()
         pygame.draw.rect(window.surface, self.color, self.rect)
         super().render(window)
-        #print("Sprite2D render done")
+    
+    def is_moving(self):
+        return self.prev_pos == self.position
     
     def move(self, vec: pygame.Vector2):
-        self.rect = self.rect.move(vec.x, vec.y)
+        self.position = pygame.Vector2(self.position.x+vec.x, self.position.y+vec.y)
+        self.rect.topleft = (self.position.x, self.position.y)
+        self.prev_pos = self.position
 
 class Image2D(Rect2D):
     def __init__(self, filename: str, layer=1, position=pygame.Vector2(0.0, 0.0)):#, size=pygame.Vector2(0.0, 0.0)):
@@ -117,21 +129,14 @@ class Image2D(Rect2D):
         self.position = position
         self.name = filename
         self.image = pygame.image.load(self.name)
-        #if size == pygame.Vector2(0.0, 0.0):
         self.rect = self.image.get_rect()
-            #print("Normal")
-        #else:
-        #    self.rect = pygame.Rect(position.x, position.y, position.x+size.x, position.x+size.y)
         self.image = self.image.convert_alpha()
         super().__init__(layer=self.layer, position=self.position)
-        #print("Initialized super()")
     
     def render(self, window: Window):
         window.surface.blit(self.image, self.rect)
         if self.debug:
-            #pygame.draw.rect(window.surface, (255, 255, 255), self.rect)
             super().render(window)
-        #print("Sprite2D render done")
 
 class AudioManager:
     def __init__(self, **tracks):
