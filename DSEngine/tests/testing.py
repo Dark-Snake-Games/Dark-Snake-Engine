@@ -21,8 +21,9 @@ while window.running:
     keys = window.frame()
     print(sprite.is_colliding_with(rect))
     acc = Vector2(0.0, 0.0)
-    acc.x = (keys[key_to_scancode("d")]-keys[key_to_scancode("a")])*window.delta
-    acc.y = (keys[key_to_scancode("s")]-keys[key_to_scancode("w")])*window.delta
+    #IMPORTANT: DO NOT USE DELTATIME WITH COLLISION DETECTION
+    acc.x = (keys[key_to_scancode("d")]-keys[key_to_scancode("a")])#*window.delta
+    acc.y = (keys[key_to_scancode("s")]-keys[key_to_scancode("w")])#*window.delta
     if not pygame.mixer.music.get_busy() and not sprite.playing and acc != Vector2(0.0, 0.0):
         sprite.play_sheet("normal")
         audio_man.play("beep")
