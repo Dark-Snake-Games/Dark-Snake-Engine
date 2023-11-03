@@ -24,6 +24,7 @@ class AnimatedSprite2D(Rect2D):
         self.position = position
         self.sprites = sheet
         self.current_sheet = self.sprites.sheets
+        self.sheet_name = ""
         self.curent_frame = 0
         self.sheet_length = -1
         self.playing = False
@@ -36,6 +37,7 @@ class AnimatedSprite2D(Rect2D):
     
     def play_sheet(self, name: str):
         self.current_sheet = self.sprites.sheets[name]
+        self.sheet_name = name
         self.frame = 0
         self.sheet_length = len(self.current_sheet.sheet)
         self.playing = True
@@ -54,11 +56,12 @@ class AnimatedSprite2D(Rect2D):
             self.move(vel)
             self.step += 1
             if self.step >= self.steps: self.moving_towards = False
-        if self.current_sheet != self.sprites.sheets and self.frame <= self.sheet_length-1:
+        if self.current_sheet != self.sprites.sheets and self.frame < self.sheet_length:
             self.image = self.current_sheet.sheet[self.frame].image
             self.frame += 1
             self.playing = True
         else:
+            self.sheet_name = ""
             self.image = self.sprites.default.image
             self.current_sheet = self.sprites.sheets
             self.frame = 0
