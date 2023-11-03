@@ -74,6 +74,7 @@ class Rect2D(Type2D):
         self.position = position
         self.color = color
         self.size = size
+        self.area = False
         self.prev_pos = self.position
         self.rect = pygame.Rect(position.x, position.y, position.x+size.x, position.y+size.y)
         self.collision_sides = {"left":False, "right":False,
@@ -85,7 +86,7 @@ class Rect2D(Type2D):
                                 "bottom":False, "top":False}
         for j in range(1, 10+1):
             for i in self.window.layers[j]:
-                if i != self:
+                if i != self and not i.area:
                     side = self.get_collision_side(i)
                     if side != None:
                         self.collision_sides[side] = True
@@ -117,8 +118,38 @@ class Rect2D(Type2D):
         return self.prev_pos == self.position
     
     def move(self, vec: pygame.Vector2):
-        self.position = pygame.Vector2(self.position.x+vec.x, self.position.y+vec.y)
+        oldpos = self.position
+        oldtl = self.rect.topleft
+        vecx = vec.x
+        vecy = vec.y
+        self.position = pygame.Vector2(self.position.x+vecx, self.position.y+vecy)
         self.rect.topleft = (self.position.x, self.position.y)
+        if vecx > 0:
+            if not self.collision_sides["right"]:
+                pass
+            else:
+                self.position.x = oldpos.x
+                self.rect.topleft = (oldpos.x, self.rect.topleft[1])
+        else:
+            if not self.collision_sides["left"]:
+                vecx = vecx
+            else:
+                self.position.x = oldpos.x
+                self.rect.topleft = (oldpos.x, self.rect.topleft[1])
+        if vecy > 0:
+            if not self.collision_sides["bottom"]:
+                pass
+            else:
+                self.position.y = oldpos.y
+                self.rect.topleft = (self.rect.topleft[0], oldpos.y)
+        else:
+            if not self.collision_sides["top"]:
+                vecy = vecy
+            else:
+                self.position.y = oldpos.y
+                self.rect.topleft = (self.rect.topleft[0], oldpos.y)
+        #self.position = pygame.Vector2(self.position.x+vecx, self.position.y+vecy)
+        #self.rect.topleft = (self.position.x, self.position.y)
         self.prev_pos = self.position
 
 class Image2D(Rect2D):

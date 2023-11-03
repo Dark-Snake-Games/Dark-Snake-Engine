@@ -29,7 +29,8 @@ class AnimatedSprite2D(Rect2D):
         self.playing = False
         self.moving_towards = False
         self.image = self.sprites.default.image
-        self.rect = self.image.get_rect()
+        self.size = pygame.Vector2(self.image.get_width(), self.image.get_height())
+        self.rect = pygame.Rect(position.x, position.y, position.x+self.size.x, position.y+self.size.y)
         self.image = self.image.convert_alpha()
         super().__init__(layer=self.layer, position=self.position)
     
@@ -47,6 +48,7 @@ class AnimatedSprite2D(Rect2D):
         self.moving_towards = True
     
     def render(self, window: Window):
+        self.detect_collisions()
         if self.moving_towards:
             vel = pygame.Vector2(self.stepx, self.stepy)
             self.move(vel)
