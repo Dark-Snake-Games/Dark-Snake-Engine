@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=61", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "DSEngine"
+description = "The game engine for the Dark Snake Games development team"
+version = "0.0.1"
+requires-python = ">=3"
+license = { file = "LICENSE" }
+authors = [{ name = "Dark Snake Development Team" }]
+dynamic = ["readme", "dependencies"]
+
+[tool.setuptools.dynamic]
+readme = {file = ["README.md"], content-type = "text/markdown"}
+dependencies = {file = "requirements.txt"}
