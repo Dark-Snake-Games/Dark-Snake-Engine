@@ -176,3 +176,4 @@ class AudioPlayer:
     
     def play(self) -> None:
         pygame.mixer.music.play()
+        
