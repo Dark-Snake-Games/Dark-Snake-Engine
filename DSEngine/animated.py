@@ -1,5 +1,6 @@
 import pygame
 from DSEngine.etypes import *
+from DSEngine.saving import save, load
 from pygame.locals import *
 
 class Spritesheet:
@@ -15,6 +16,18 @@ class AnimationSheet:
     def __init__(self, default: Image2D, **spritesheets):
         self.sheets = spritesheets
         self.default = default
+    
+    def save_asheet(self, filename: str):
+        data = {}
+        for i in self.sheets.keys():
+            d = []
+            data["default"] = self.default.name
+            for j in self.sheets[i].sheet:
+                if type(j) == Image2D:
+                    d.append(j.name)
+            data[i] = d
+        save(filename, data)
+        print(data)
 
 class AnimatedSprite2D(Rect2D):
     def __init__(self, sheet: AnimationSheet, layer=1, position=pygame.Vector2(0.0, 0.0)):#, size=pygame.Vector2(0.0, 0.0)):
