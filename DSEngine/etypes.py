@@ -159,10 +159,42 @@ class Image2D(Rect2D):
         self.layer = layer
         self.position = position
         self.name = filename
+        self.bodies_touching = []
+        self.areas_touching = []
         self.image = pygame.image.load(self.name)
         self.rect = self.image.get_rect()
         self.image = self.image.convert_alpha()
         super().__init__(layer=self.layer, position=self.position)
+    
+    def detect_collisions(self):
+        self.bodies_touching = []
+        self.areas_touching = []
+        for j in range(1, 10+1):
+            for i in self.window.layers[j]:
+                if i != self and not i.area:
+                    side = self.get_collision_side(i)
+                    if side != None:
+                        if not i.area:
+                            self.bodies_touching.append(i)
+                        else:
+                            self.areas_touching.append(i)
+
+    
+    def render(self, window: Window):
+        window.surface.blit(self.image, self.rect)
+        self.detect_collisions()
+        if self.debug:
+            super().render(window)
+
+class Area2D(Rect2D):
+    def __init__(self, layer: int = 0, position=pygame.Vector2(0.0, 0.0), size=pygame.Vector2(0.0, 0.0)):#, size=pygame.Vector2(0.0, 0.0)):
+        self.sprite = pygame.sprite.Sprite()
+        self.debug = False
+        self.layer = layer
+        self.position = position
+        self.area = True
+        self.size = size
+        super().__init__(layer=self.layer, position=self.position, size=size)
     
     def render(self, window: Window):
         window.surface.blit(self.image, self.rect)
