@@ -27,7 +27,20 @@ class AnimationSheet:
                     d.append(j.name)
             data[i] = d
         save(filename, data)
-        print(data)
+        #print(data)
+    
+    def load_asheet(self, filename: str):
+        data = load(filename)
+        self.default = data["default"]
+        data["default"] = None
+        for i in data.keys():
+            d = Spritesheet()
+            if data[i] != None:
+                for j in data[i]:
+                    img = Image2D(j)
+                    d.sheet.append(img)
+                self.sheets[i] = d
+        #print(self.sheets)
 
 class AnimatedSprite2D(Rect2D):
     def __init__(self, sheet: AnimationSheet, layer=1, position=pygame.Vector2(0.0, 0.0)):#, size=pygame.Vector2(0.0, 0.0)):

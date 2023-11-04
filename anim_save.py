@@ -9,5 +9,6 @@ spritesheet1 = Spritesheet(image1, image1, image1, image1, image1, image2, image
 spritesheet2 = Spritesheet(image2, image1)
 animationsheet = AnimationSheet(default=image1, normal=spritesheet1, back=spritesheet2)
 animationsheet.save_asheet("anim.sav")
+animationsheet.load_asheet("anim.sav")
 while window.running:
     keys = window.frame()
