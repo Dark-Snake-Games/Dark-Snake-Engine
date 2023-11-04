@@ -34,11 +34,11 @@ class AnimationSheet:
         self.default = data["default"]
         data["default"] = None
         for i in data.keys():
-            d = []
+            d = Spritesheet()
             if data[i] != None:
                 for j in data[i]:
                     img = Image2D(j)
-                    d.append(img)
+                    d.sheet.append(img)
                 self.sheets[i] = d
         #print(self.sheets)
 
