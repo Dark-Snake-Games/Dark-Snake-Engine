@@ -84,12 +84,11 @@ class Rect2D(Type2D):
     def detect_collisions(self):
         self.collision_sides = {"left":False, "right":False,
                                 "bottom":False, "top":False}
-        for j in range(1, 10+1):
-            for i in self.window.layers[j]:
-                if i != self and not i.area:
-                    side = self.get_collision_side(i)
-                    if side != None:
-                        self.collision_sides[side] = True
+        for i in self.window.layers[self.layer]:
+            if i != self and type(i) == Rect2D and not i.area:
+                side = self.get_collision_side(i)
+                if side != None:
+                    self.collision_sides[side] = True
     
     def get_collision_side(self, rect2):
         if self.is_colliding_with(rect2):
@@ -159,26 +158,10 @@ class Image2D(Rect2D):
         self.layer = layer
         self.position = position
         self.name = filename
-        self.bodies_touching = []
-        self.areas_touching = []
         self.image = pygame.image.load(self.name)
         self.rect = self.image.get_rect()
         self.image = self.image.convert_alpha()
         super().__init__(layer=self.layer, position=self.position)
-    
-    def detect_collisions(self):
-        self.bodies_touching = []
-        self.areas_touching = []
-        for j in range(1, 10+1):
-            for i in self.window.layers[j]:
-                if i != self and not i.area:
-                    side = self.get_collision_side(i)
-                    if side != None:
-                        if not i.area:
-                            self.bodies_touching.append(i)
-                        else:
-                            self.areas_touching.append(i)
-
     
     def render(self, window: Window):
         window.surface.blit(self.image, self.rect)
@@ -192,12 +175,27 @@ class Area2D(Rect2D):
         self.debug = False
         self.layer = layer
         self.position = position
+        self.bodies_touching = []
+        self.areas_touching = []
         self.area = True
         self.size = size
         super().__init__(layer=self.layer, position=self.position, size=size)
     
+    def detect_collisions(self):
+        self.bodies_touching = []
+        self.areas_touching = []
+        for i in self.window.layers[self.layer]:
+            if i != self and type(i) == Rect2D and not i.area:
+                side = self.get_collision_side(i)
+                if side != None:
+                    if not i.area:
+                        self.bodies_touching.append(i)
+                    else:
+                        self.areas_touching.append(i)
+    
     def render(self, window: Window):
         window.surface.blit(self.image, self.rect)
+        self.detect_collisions()
         if self.debug:
             super().render(window)
 
