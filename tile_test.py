@@ -19,7 +19,7 @@ while window.running:
             imported = True
     else:
         if tile_y <= 10:
-            tilemap.add_tile("Test.png", Vector2(tile_x, tile_y))
+            tilemap.add_tile(1, "Test.png", Vector2(tile_x, tile_y))
             if tile_x >= 10:
                 tile_x = 0
                 tile_y += 1
