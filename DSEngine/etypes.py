@@ -76,7 +76,7 @@ class Rect2D(Type2D):
         self.size = size
         self.area = False
         self.prev_pos = self.position
-        self.rect = pygame.Rect(position.x, position.y, position.x+size.x, position.y+size.y)
+        self.rect = pygame.Rect(position.x, position.y, size.x, size.y)
         self.collision_sides = {"left":False, "right":False,
                                 "bottom":False, "top":False}
         super().__init__(layer=self.layer, position=self.position)
@@ -85,7 +85,7 @@ class Rect2D(Type2D):
         self.collision_sides = {"left":False, "right":False,
                                 "bottom":False, "top":False}
         for i in self.window.layers[self.layer]:
-            if i != self and type(i) == Rect2D and not i.area:
+            if i != self and "type(i) == Rect2D" and not i.area:
                 side = self.get_collision_side(i)
                 if side != None:
                     self.collision_sides[side] = True

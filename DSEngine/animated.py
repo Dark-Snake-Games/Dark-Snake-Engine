@@ -43,7 +43,8 @@ class AnimationSheet:
         #print(self.sheets)
 
 class AnimatedSprite2D(Rect2D):
-    def __init__(self, sheet: AnimationSheet, layer=1, position=pygame.Vector2(0.0, 0.0)):#, size=pygame.Vector2(0.0, 0.0)):
+    def __init__(self, sheet: AnimationSheet, layer=1, position=pygame.Vector2(0.0, 0.0),size=None):#, size=pygame.Vector2(0.0, 0.0)):
+        
         self.sprite = pygame.sprite.Sprite()
         self.debug = False
         self.layer = layer
@@ -56,10 +57,14 @@ class AnimatedSprite2D(Rect2D):
         self.playing = False
         self.moving_towards = False
         self.image = self.sprites.default.image
-        self.size = pygame.Vector2(self.image.get_width(), self.image.get_height())
-        self.rect = pygame.Rect(position.x, position.y, position.x+self.size.x, position.y+self.size.y)
+        if size==None:
+            self.size = pygame.Vector2(self.image.get_width(), self.image.get_height())
+        else:
+            self.size=size
+        print(self.size)
+        self.rect = pygame.Rect(position.x, position.y, self.size.x, self.size.y)
         self.image = self.image.convert_alpha()
-        super().__init__(layer=self.layer, position=self.position)
+        super().__init__(layer=self.layer, position=self.position,size=self.size)
     
     def play_sheet(self, name: str):
         self.current_sheet = self.sprites.sheets[name]
