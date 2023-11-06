@@ -69,6 +69,7 @@ class Type2D:
 class Rect2D(Type2D):
     def __init__(self, layer=1, position=pygame.Vector2(0.0, 0.0), color=(255, 255, 255), size=pygame.Vector2(100.0, 100.0)):
         self.sprite = pygame.sprite.Sprite()
+        self.visible=True
         self.window = None
         self.layer = layer
         self.position = position
@@ -114,10 +115,11 @@ class Rect2D(Type2D):
         return self.rect.colliderect(rect2.rect)
     
     def render(self, window: Window):
-        self.window = window
-        self.detect_collisions()
-        pygame.draw.rect(window.surface, self.color, self.rect)
-        super().render(window)
+        if self.visible:
+            self.window = window
+            self.detect_collisions()
+            pygame.draw.rect(window.surface, self.color, self.rect)
+            super().render(window)
     
     def is_moving(self):
         return self.prev_pos == self.position
@@ -170,10 +172,11 @@ class Image2D(Rect2D):
         super().__init__(layer=self.layer, position=self.position)
     
     def render(self, window: Window):
-        window.surface.blit(self.image, self.rect)
-        self.detect_collisions()
-        if self.debug:
-            super().render(window)
+        if self.visible:
+            window.surface.blit(self.image, self.rect)
+            self.detect_collisions()
+            if self.debug:
+                super().render(window)
 
 class Area2D(Rect2D):
     def __init__(self, layer: int = 0, position=pygame.Vector2(0.0, 0.0), size=pygame.Vector2(0.0, 0.0)):#, size=pygame.Vector2(0.0, 0.0)):
@@ -200,10 +203,11 @@ class Area2D(Rect2D):
                         self.areas_touching.append(i)
     
     def render(self, window: Window):
-        window.surface.blit(self.image, self.rect)
-        self.detect_collisions()
-        if self.debug:
-            super().render(window)
+        if self.visible:
+            window.surface.blit(self.image, self.rect)
+            self.detect_collisions()
+            if self.debug:
+                super().render(window)
 
 class AudioManager:
     def __init__(self, **tracks):
@@ -225,3 +229,4 @@ class AudioPlayer:
     
     def play(self):
         pygame.mixer.music.play()
+
