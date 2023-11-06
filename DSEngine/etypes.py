@@ -80,6 +80,12 @@ class Rect2D(Type2D):
         self.collision_sides = {"left":False, "right":False,
                                 "bottom":False, "top":False}
         super().__init__(layer=self.layer, position=self.position)
+
+    def is_on_floor(self):
+      return self.collision_sides["bottom"]
+
+    def is_on_ceiling(self):
+      return self.collision_sides["top"]
     
     def detect_collisions(self):
         self.collision_sides = {"left":False, "right":False,
