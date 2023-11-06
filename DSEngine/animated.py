@@ -81,24 +81,25 @@ class AnimatedSprite2D(Rect2D):
         self.moving_towards = True
     
     def render(self, window: Window):
-        self.detect_collisions()
-        if self.moving_towards:
-            vel = pygame.Vector2(self.stepx, self.stepy)
-            self.move(vel)
-            self.step += 1
-            if self.step >= self.steps: self.moving_towards = False
-        if self.current_sheet != self.sprites.sheets and self.frame < self.sheet_length:
-            self.image = self.current_sheet.sheet[self.frame].image
-            self.frame += 1
-            self.playing = True
-        else:
-            self.sheet_name = ""
-            self.image = self.sprites.default.image
-            self.current_sheet = self.sprites.sheets
-            self.frame = 0
-            self.sheet_length = -1
-            self.playing = False
-        window.surface.blit(self.image, self.rect)
-        if self.debug:
-            pygame.draw.rect(window.surface, (255, 255, 255), self.rect)
-            super().render(window)
+        if self.visible:
+            self.detect_collisions()
+            if self.moving_towards:
+                vel = pygame.Vector2(self.stepx, self.stepy)
+                self.move(vel)
+                self.step += 1
+                if self.step >= self.steps: self.moving_towards = False
+            if self.current_sheet != self.sprites.sheets and self.frame < self.sheet_length:
+                self.image = self.current_sheet.sheet[self.frame].image
+                self.frame += 1
+                self.playing = True
+            else:
+                self.sheet_name = ""
+                self.image = self.sprites.default.image
+                self.current_sheet = self.sprites.sheets
+                self.frame = 0
+                self.sheet_length = -1
+                self.playing = False
+            window.surface.blit(self.image, self.rect)
+            if self.debug:
+                pygame.draw.rect(window.surface, (255, 255, 255), self.rect)
+                super().render(window)
