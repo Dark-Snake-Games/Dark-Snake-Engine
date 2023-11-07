@@ -70,6 +70,7 @@ class Rect2D(Type2D):
     def __init__(self, layer=1, position=pygame.Vector2(0.0, 0.0), color=(255, 255, 255), size=pygame.Vector2(100.0, 100.0)):
         self.sprite = pygame.sprite.Sprite()
         self.visible=True
+        self.collision=True
         self.window = None
         self.layer = layer
         self.position = position
@@ -86,7 +87,7 @@ class Rect2D(Type2D):
         self.collision_sides = {"left":False, "right":False,
                                 "bottom":False, "top":False}
         for i in self.window.layers[self.layer]:
-            if i != self and "type(i) == Rect2D" and not i.area:
+            if i != self and "type(i) == Rect2D" and not i.area and i.collision:
                 side = self.get_collision_side(i)
                 if side != None:
                     self.collision_sides[side] = True
@@ -188,7 +189,7 @@ class Area2D(Rect2D):
         self.bodies_touching = []
         self.areas_touching = []
         for i in self.window.layers[self.layer]:
-            if i != self and type(i) == Rect2D and not i.area:
+            if i != self and type(i) == Rect2D and not i.area and i.collision:
                 side = self.get_collision_side(i)
                 if side != None:
                     if not i.area:
