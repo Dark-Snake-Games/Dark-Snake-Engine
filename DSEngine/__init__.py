@@ -11,6 +11,7 @@ with contextlib.redirect_stdout(None):
   from .gui import *
   from .saving import *
   from .tiles import *
+  from .scenes import *
 
 pg.init()
 

@@ -67,7 +67,7 @@ class Type2D:
         pass
 
 class Rect2D(Type2D):
-    def __init__(self, layer=1, position=pygame.Vector2(0.0, 0.0), color=(255, 255, 255), size=pygame.Vector2(100.0, 100.0)):
+    def __init__(self, layer=1, position=pygame.Vector2(0.0, 0.0), color=(255, 255, 255), size=pygame.Vector2(100.0, 100.0),offset=pygame.Vector2(0,0)):
         self.sprite = pygame.sprite.Sprite()
         self.visible=True
         self.collision=True
@@ -76,9 +76,10 @@ class Rect2D(Type2D):
         self.position = position
         self.color = color
         self.size = size
+        self.collisionoffset=offset
         self.area = False
         self.prev_pos = self.position
-        self.rect = pygame.Rect(position.x, position.y, size.x, size.y)
+        self.rect = pygame.Rect(position.x+self.collisionoffset.x, position.y+self.collisionoffset.y, size.x, size.y)
         self.collision_sides = {"left":False, "right":False,
                                 "bottom":False, "top":False}
         super().__init__(layer=self.layer, position=self.position)
@@ -150,12 +151,13 @@ class Rect2D(Type2D):
             else:
                 self.position.y = oldpos.y
                 self.rect.topleft = (self.rect.topleft[0], oldpos.y)
+        self.rect.topleft+=self.collisionoffset
         #self.position = pygame.Vector2(self.position.x+vecx, self.position.y+vecy)
         #self.rect.topleft = (self.position.x, self.position.y)
         self.prev_pos = self.position
 
 class Image2D(Rect2D):
-    def __init__(self, filename: str, layer=1, position=pygame.Vector2(0.0, 0.0)):#, size=pygame.Vector2(0.0, 0.0)):
+    def __init__(self, filename: str, layer=1, position=pygame.Vector2(0.0, 0.0),offset=pygame.Vector2(0,0)):#, size=pygame.Vector2(0.0, 0.0)):
         self.sprite = pygame.sprite.Sprite()
         self.debug = False
         self.layer = layer
@@ -163,12 +165,17 @@ class Image2D(Rect2D):
         self.name = filename
         self.image = pygame.image.load(self.name)
         self.rect = self.image.get_rect()
+        self.collisionoffset=offset
+        self.rect.x += self.collisionoffset.x
+        self.rect.y += self.collisionoffset.y
+        
         self.image = self.image.convert_alpha()
         super().__init__(layer=self.layer, position=self.position)
     
     def render(self, window: Window):
         if self.visible:
-            window.surface.blit(self.image, self.rect)
+            unoffset=pygame.Vector2(self.collisionoffset.x,self.collisionoffset.y)
+            window.surface.blit(self.image, self.rect.topleft-unoffset)
             self.detect_collisions()
             if self.debug:
                 super().render(window)
