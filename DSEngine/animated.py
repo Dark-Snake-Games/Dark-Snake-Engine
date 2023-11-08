@@ -43,7 +43,7 @@ class AnimationSheet:
         #print(self.sheets)
 
 class AnimatedSprite2D(Rect2D):
-    def __init__(self, sheet: AnimationSheet, layer=1, position=pygame.Vector2(0.0, 0.0),size=None):#, size=pygame.Vector2(0.0, 0.0)):
+    def __init__(self, sheet: AnimationSheet, layer=1, position=pygame.Vector2(0.0, 0.0),size=None,offset=pygame.Vector2(0,0)):#, size=pygame.Vector2(0.0, 0.0)):
         
         self.sprite = pygame.sprite.Sprite()
         self.debug = False
@@ -56,15 +56,17 @@ class AnimatedSprite2D(Rect2D):
         self.sheet_length = -1
         self.playing = False
         self.moving_towards = False
+        self.collisionoffset=offset
         self.image = self.sprites.default.image
         if size==None:
             self.size = pygame.Vector2(self.image.get_width(), self.image.get_height())
         else:
             self.size=size
         print(self.size)
-        self.rect = pygame.Rect(position.x, position.y, self.size.x, self.size.y)
+        self.rect = pygame.Rect(position.x+offset.x, position.y+offset.y, self.size.x, self.size.y)
         self.image = self.image.convert_alpha()
-        super().__init__(layer=self.layer, position=self.position,size=self.size)
+        super().__init__(layer=self.layer, position=self.position,size=self.size,offset=offset)
+        print(self.collisionoffset)
     
     def play_sheet(self, name: str):
         self.current_sheet = self.sprites.sheets[name]
@@ -99,7 +101,8 @@ class AnimatedSprite2D(Rect2D):
                 self.frame = 0
                 self.sheet_length = -1
                 self.playing = False
-            window.surface.blit(self.image, self.rect)
+            unoffset=pygame.Vector2(self.collisionoffset.x,self.collisionoffset.y)
+            window.surface.blit(self.image, self.rect.topleft-unoffset)
             if self.debug:
                 pygame.draw.rect(window.surface, (255, 255, 255), self.rect)
                 super().render(window)
