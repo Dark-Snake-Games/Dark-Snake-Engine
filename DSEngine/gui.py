@@ -43,13 +43,13 @@ class Button(Rect2D):
     def render(self, window: Window):
         if self.color_rect.collidepoint(window.get_mouse_pos()):
             self.hovered = True
-            leftclick, _, _ = pygame.mouse.get_pressed()
-            if leftclick:
-                self.pressed = True
-            else:
-                self.pressed = False
         else:
             self.hovered = False
+        leftclick, _, _ = pygame.mouse.get_pressed()
+        if leftclick and self.color_rect.collidepoint(window.get_mouse_pos()):
+            self.pressed = True
+        else:
+            self.pressed = False
         pygame.draw.rect(window.surface, (0, 0, 0), self.color_rect)
         window.surface.blit(self.text_surface, (self.position.x, self.position.y))
         #print("Sprite2D render done")
