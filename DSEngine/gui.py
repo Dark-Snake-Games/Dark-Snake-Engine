@@ -20,7 +20,8 @@ class Text2D(Rect2D):
     def render(self, window: Window):
         if self.debug:
             pygame.draw.rect(window.surface, (0, 0, 0), self.color_rect)
-        window.surface.blit(self.text_surface, (self.position.x, self.position.y))
+        if self.visible:
+            window.surface.blit(self.text_surface, (self.position.x, self.position.y))
         #print("Sprite2D render done")
 
 class Button(Rect2D):
@@ -50,8 +51,9 @@ class Button(Rect2D):
             self.pressed = True
         else:
             self.pressed = False
-        pygame.draw.rect(window.surface, (0, 0, 0), self.color_rect)
-        window.surface.blit(self.text_surface, (self.position.x, self.position.y))
+        if self.visible:
+            pygame.draw.rect(window.surface, (0, 0, 0), self.color_rect)
+            window.surface.blit(self.text_surface, (self.position.x, self.position.y))
         #print("Sprite2D render done")
 
 class DialougeBox(Rect2D):
@@ -75,15 +77,14 @@ class DialougeBox(Rect2D):
         #print("Initialized super()")
     
     def render(self, window: Window):
-        # if not self.button_init:
-        #     self.button.init(window)
-        if window.pressed_keys[13]: #or self.button.pressed:
-            self.remove(window)
-            # self.button.remove(window)
-        sx, sy = window.size
-        #self.button.position = pygame.Vector2(sx, (self.position.y+(sy-self.position.y))-20)
-        self.color_rect = pygame.Rect(self.position.x, self.position.y, sx, self.position.y+(sy-self.position.x))
-        pygame.draw.rect(window.surface, (0, 0, 0), self.color_rect)
-        window.surface.blit(self.text_surface, (self.position.x, self.position.y+50))
-        window.surface.blit(self.char_text_surface, (self.position.x, self.position.y))
-        #print("Sprite2D render done")
+        if self.visible:
+            if window.pressed_keys[13]: #or self.button.pressed:
+                self.remove(window)
+                # self.button.remove(window)
+            sx, sy = window.size
+            #self.button.position = pygame.Vector2(sx, (self.position.y+(sy-self.position.y))-20)
+            self.color_rect = pygame.Rect(self.position.x, self.position.y, sx, self.position.y+(sy-self.position.x))
+            pygame.draw.rect(window.surface, (0, 0, 0), self.color_rect)
+            window.surface.blit(self.text_surface, (self.position.x, self.position.y+50))
+            window.surface.blit(self.char_text_surface, (self.position.x, self.position.y))
+            #print("Sprite2D render done")
