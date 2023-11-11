@@ -85,6 +85,7 @@ class AnimatedSprite2D(Rect2D):
     def render(self, window: Window):
         if self.visible:
             self.detect_collisions()
+            self.rect.topleft = (self.position.x+self.collisionoffset.x+window.current_camera.position.x, self.position.y+self.collisionoffset.y+window.current_camera.position.y)
             if self.moving_towards:
                 vel = pygame.Vector2(self.stepx, self.stepy)
                 self.move(vel)

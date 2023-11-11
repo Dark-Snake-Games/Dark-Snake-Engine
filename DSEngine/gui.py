@@ -52,6 +52,7 @@ class Button(Rect2D):
         else:
             self.pressed = False
         if self.visible:
+            self.rect.topleft = (self.position.x+self.collisionoffset.x+window.current_camera.position.x, self.position.y+self.collisionoffset.y+window.current_camera.position.y)
             pygame.draw.rect(window.surface, (0, 0, 0), self.color_rect)
             window.surface.blit(self.text_surface, (self.position.x, self.position.y))
         #print("Sprite2D render done")
@@ -81,6 +82,7 @@ class DialougeBox(Rect2D):
             if window.pressed_keys[13]: #or self.button.pressed:
                 self.remove(window)
                 # self.button.remove(window)
+            self.rect.topleft = (self.position.x+self.collisionoffset.x+window.current_camera.position.x, self.position.y+self.collisionoffset.y+window.current_camera.position.y)
             sx, sy = window.size
             #self.button.position = pygame.Vector2(sx, (self.position.y+(sy-self.position.y))-20)
             self.color_rect = pygame.Rect(self.position.x, self.position.y, sx, self.position.y+(sy-self.position.x))
