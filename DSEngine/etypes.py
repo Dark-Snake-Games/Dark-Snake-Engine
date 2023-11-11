@@ -1,4 +1,5 @@
 import pygame, sys
+from .camera import Camera2D
 
 def key_to_scancode(key: str):
     return pygame.key.key_code(key)
@@ -14,6 +15,7 @@ class Window:
         self.delta = 0
         self.elapsed_ms = 0
         self.seconds = 0
+        self.current_camera = Camera2D(position=pygame.Vector2(0, 0))
         self.pressed_keys = pygame.key.get_pressed()
         pygame.display.set_icon(icon)
         pygame.display.set_caption(title)
@@ -121,6 +123,7 @@ class Rect2D(Type2D):
         if self.visible:
             self.window = window
             self.detect_collisions()
+            self.rect.topleft = (self.position.x+self.collisionoffset.x+window.current_camera.position.x, self.position.y+self.collisionoffset.y+window.current_camera.position.y)
             pygame.draw.rect(window.surface, self.color, self.rect)
             super().render(window)
     
@@ -182,6 +185,7 @@ class Image2D(Rect2D):
     def render(self, window: Window):
         if self.visible:
             unoffset=pygame.Vector2(self.collisionoffset.x,self.collisionoffset.y)
+            self.rect.topleft = (self.position.x+self.collisionoffset.x+window.current_camera.position.x, self.position.y+self.collisionoffset.y+window.current_camera.position.y)
             window.surface.blit(self.image, self.rect.topleft-unoffset)
             self.detect_collisions()
             if self.debug:
@@ -213,6 +217,7 @@ class Area2D(Rect2D):
     
     def render(self, window: Window):
         if self.visible:
+            self.rect.topleft = (self.position.x+self.collisionoffset.x+window.current_camera.position.x, self.position.y+self.collisionoffset.y+window.current_camera.position.y)
             window.surface.blit(self.image, self.rect)
             self.detect_collisions()
             if self.debug:

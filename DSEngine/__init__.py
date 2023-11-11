@@ -12,6 +12,7 @@ with contextlib.redirect_stdout(None):
   from .saving import *
   from .tiles import *
   from .scenes import *
+  from .camera import *
 
 pg.init()
 
