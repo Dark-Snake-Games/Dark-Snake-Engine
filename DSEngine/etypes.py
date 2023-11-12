@@ -51,6 +51,9 @@ class Window:
         self.pressed_keys = pygame.key.get_pressed()
         return self.pressed_keys
 
+
+        
+
 class Type2D:
     def __init__(self, layer=1, position=pygame.Vector2(0.0, 0.0), rotation=0.0):
         self.layer = layer
@@ -165,6 +168,49 @@ class Rect2D(Type2D):
         #self.position = pygame.Vector2(self.position.x+vecx, self.position.y+vecy)
         #self.rect.topleft = (self.position.x, self.position.y)
         self.prev_pos = self.position
+
+class Surface(Rect2D):
+    def __init__(self, layer=1, position=pygame.Vector2(0.0, 0.0), color=(255, 255, 255), size=pygame.Vector2(100.0, 100.0),offset=pygame.Vector2(0,0)):
+        super().__init__(layer,position,color,size,offset)
+        self.surface=pygame.Surface(size)
+        self.layers = {1:[], 2:[], 3:[], 4:[], 5:[], 6:[],
+                       7:[], 8:[], 9:[], 10:[], "GUI":[]}
+        self.window=None
+        self.elapsed_ms=0
+        self.current_camera = Camera2D(position=pygame.Vector2(0, 0))
+    
+    def render(self, window: Window):
+        if self.visible:
+            self.window = window
+            self.detect_collisions()
+            self.rect.topleft = (self.position.x+self.collisionoffset.x+window.current_camera.position.x, self.position.y+self.collisionoffset.y+window.current_camera.position.y)
+            window.surface.blit(self.surface,self.position,self.rect)
+    
+    def frame(self):
+        if self.window !=None:
+            global keys
+            self.delta = self.window.clock.tick(self.window.fps)
+            self.elapsed_ms += self.delta
+            self.seconds = self.elapsed_ms/100
+            pygame.draw.rect(self.surface, (0,0,0), self.rect)
+            for event in pygame.event.get():      
+                if event.type == pygame.QUIT: 
+                    self.running = False
+                    pygame.quit()
+                    sys.exit()
+            for j in range(1, 10+1):
+                #print(j)
+                for i in self.layers[j]:
+                    i.render(self)
+            for i in self.layers["GUI"]:
+                i.render(self)
+            self.window.frame()
+            pygame.display.flip()
+            pygame.display.update()
+            
+        self.pressed_keys = pygame.key.get_pressed()
+        return self.pressed_keys
+                
 
 class Image2D(Rect2D):
     def __init__(self, filename: str, layer=1, position=pygame.Vector2(0.0, 0.0),offset=pygame.Vector2(0,0)):#, size=pygame.Vector2(0.0, 0.0)):
