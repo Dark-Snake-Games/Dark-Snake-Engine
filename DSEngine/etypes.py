@@ -5,11 +5,11 @@ def key_to_scancode(key: str):
     return pygame.key.key_code(key)
 
 class Window:
-    def __init__(self, fps=60, title="DSEngine Window", size: tuple=(800, 600), bg: tuple=(0, 0, 0), icon=pygame.image.load("default.icon.png")):
+    def __init__(self, fps=60, title="DSEngine Window", size: tuple=(800, 600), bg: tuple=(0, 0, 0), icon=pygame.image.load("default.icon.png"), zoom=pygame.Vector2(1,1)):
         self.layers = {1:[], 2:[], 3:[], 4:[], 5:[], 6:[],
                        7:[], 8:[], 9:[], 10:[], "GUI":[]}
         print("Window init")
-        self.fps, self.title, self.size, self.bg, self.icon = fps, title, size, bg, icon
+        self.fps, self.title, self.size, self.bg, self.icon, self.zoom = fps, title, size, bg, icon, zoom
         self.surface = pygame.display.set_mode(size)
         self.clock = pygame.time.Clock()
         self.delta = 0
@@ -46,6 +46,9 @@ class Window:
                 i.render(self)
         for i in self.layers["GUI"]:
             i.render(self)
+        if self.zoom!=pygame.Vector2(1,1):
+            surface=pygame.transform.scale(self.surface,(self.size[0]*self.zoom.x, self.size[1]*self.zoom.y))
+            self.surface.blit(surface,(0,0))
         pygame.display.flip()
         pygame.display.update()
         self.pressed_keys = pygame.key.get_pressed()
@@ -220,13 +223,14 @@ class Image2D(Rect2D):
         self.position = position
         self.name = filename
         self.image = pygame.image.load(self.name)
+        
+        self.image = self.image.convert_alpha()
+        super().__init__(layer=self.layer, position=self.position)
+        
         self.rect = self.image.get_rect()
         self.collisionoffset=offset
         self.rect.x += self.collisionoffset.x
         self.rect.y += self.collisionoffset.y
-        
-        self.image = self.image.convert_alpha()
-        super().__init__(layer=self.layer, position=self.position)
     
     def render(self, window: Window):
         if self.visible:
