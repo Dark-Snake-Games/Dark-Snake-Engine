@@ -1,9 +1,12 @@
 
 SCN = "main"
 
-def resetwindow():
+def resetwindow(win=None):
 	global window
-	window.layers = {1: [], 2: [], 3: [], 4: [], 5: [], 6: [], 7: [], 8: [], 9: [], 10: [], "GUI": []}
+	if win!=None:
+		win.layers = {1: [], 2: [], 3: [], 4: [], 5: [], 6: [], 7: [], 8: [], 9: [], 10: [], "GUI": []}
+	else:
+		window.layers = {1: [], 2: [], 3: [], 4: [], 5: [], 6: [], 7: [], 8: [], 9: [], 10: [], "GUI": []}
 	
 def fakescene(keys):
 	pass
