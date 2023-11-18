@@ -17,6 +17,8 @@ class Window:
         self.seconds = 0
         self.current_camera = Camera2D(position=pygame.Vector2(0, 0))
         self.pressed_keys = pygame.key.get_pressed()
+        self.prev_keys=pygame.key.ScancodeWrapper()
+    
         pygame.display.set_icon(icon)
         pygame.display.set_caption(title)
         self.bg_rect = pygame.Rect(0, 0, size[0], size[1])
@@ -30,6 +32,8 @@ class Window:
         return pygame.Vector2(x, y)
     
     def frame(self):
+        
+        self.prev_keys=self.pressed_keys
         global keys
         self.delta = self.clock.tick(self.fps)
         self.elapsed_ms += self.delta
@@ -53,6 +57,10 @@ class Window:
         pygame.display.update()
         self.pressed_keys = pygame.key.get_pressed()
         return self.pressed_keys
+    
+    def key_just_pressed(self,scancode:int):
+        return self.pressed_keys[scancode] and not self.prev_keys[scancode]
+    
 
 
         
@@ -181,6 +189,7 @@ class Surface(Rect2D):
         self.window=None
         self.elapsed_ms=0
         self.current_camera = Camera2D(position=pygame.Vector2(0, 0))
+        self.pressed_keys,self.prev_keys=pygame.key.ScancodeWrapper(),pygame.key.ScancodeWrapper()
     
     def render(self, window: Window):
         if self.visible:
@@ -190,6 +199,8 @@ class Surface(Rect2D):
             window.surface.blit(self.surface,self.position,self.rect)
     
     def frame(self):
+        self.prev_keys=self.pressed_keys
+        self.pressed_keys = pygame.key.get_pressed()
         if self.window !=None:
             global keys
             self.delta = self.window.clock.tick(self.window.fps)
@@ -211,8 +222,11 @@ class Surface(Rect2D):
             pygame.display.flip()
             pygame.display.update()
             
-        self.pressed_keys = pygame.key.get_pressed()
+        
         return self.pressed_keys
+    
+    def key_just_pressed(self,scancode:int):
+        return self.pressed_keys[scancode] and not self.prev_keys[scancode]
                 
 
 class Image2D(Rect2D):
@@ -240,6 +254,15 @@ class Image2D(Rect2D):
             self.detect_collisions()
             if self.debug:
                 super().render(window)
+    def changeimage(self,source,changecollision=True):
+        self.image = pygame.image.load(source)
+        self.name=source
+        self.image = self.image.convert_alpha()
+        
+        if changecollision:
+            self.rect = self.image.get_rect()
+            self.rect.x += self.collisionoffset.x
+            self.rect.y += self.collisionoffset.y
 
 class Area2D(Rect2D):
     def __init__(self, layer: int = 0, position=pygame.Vector2(0.0, 0.0), size=pygame.Vector2(0.0, 0.0)):#, size=pygame.Vector2(0.0, 0.0)):
