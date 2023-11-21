@@ -4,7 +4,7 @@ from pygame.locals import *
 pygame.font.init()
 
 class Text2D(Rect2D):
-    def __init__(self, text: str, layer=1, position=pygame.Vector2(0.0, 0.0), font=pygame.font.SysFont('freesans', 40)):#, size=pygame.Vector2(0.0, 0.0)):
+    def __init__(self, text: str, layer="GUI", position=pygame.Vector2(0.0, 0.0), font=pygame.font.SysFont('freesans', 40)):#, size=pygame.Vector2(0.0, 0.0)):
         self.debug = False
         self.layer = layer
         self.position = position
@@ -25,7 +25,7 @@ class Text2D(Rect2D):
         #print("Sprite2D render done")
 
 class Button(Rect2D):
-    def __init__(self, text: str, layer=1, position=pygame.Vector2(0.0, 0.0), font = pygame.font.SysFont('freesans', 40)):#, size=pygame.Vector2(0.0, 0.0)):
+    def __init__(self, text: str, layer="GUI", position=pygame.Vector2(0.0, 0.0), font = pygame.font.SysFont('freesans', 40),size=pygame.Vector2(0,0)):#, size=pygame.Vector2(0.0, 0.0)):
         self.debug = False
         self.layer = layer
         self.position = position
@@ -37,6 +37,8 @@ class Button(Rect2D):
         self.text_surface = self.font.render(self.text, False, (255, 255, 255))
         self.color_rect = self.text_surface.get_rect()
         self.color_rect.topleft = (position.x ,position.y)
+        if size!=pygame.Vector2(0,0):
+            self.color_rect.size=size
         #self.rect = self.text_surface.get_rect()
         super().__init__(layer=self.layer, position=self.position)
         #print("Initialized super()")
@@ -53,7 +55,7 @@ class Button(Rect2D):
             self.pressed = False
         if self.visible:
             self.rect.topleft = (self.position.x+self.collisionoffset.x+window.current_camera.position.x, self.position.y+self.collisionoffset.y+window.current_camera.position.y)
-            pygame.draw.rect(window.surface, (0, 0, 0), self.color_rect)
+            pygame.draw.rect(window.surface, (0, 255, 0), self.color_rect)
             window.surface.blit(self.text_surface, (self.position.x, self.position.y))
         #print("Sprite2D render done")
 
