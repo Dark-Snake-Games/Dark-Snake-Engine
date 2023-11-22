@@ -62,12 +62,10 @@ class AnimatedSprite2D(Rect2D):
             self.size = pygame.Vector2(self.image.get_width(), self.image.get_height())
         else:
             self.size=size
-        print(self.size)
         self.rect = pygame.Rect(position.x+offset.x, position.y+offset.y, self.size.x, self.size.y)
         self.image = self.image.convert_alpha()
         super().__init__(layer=self.layer, position=self.position,size=self.size,offset=offset)
-        print(self.collisionoffset)
-    
+        
     def play_sheet(self, name: str):
         self.current_sheet = self.sprites.sheets[name]
         self.sheet_name = name

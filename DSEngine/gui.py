@@ -1,5 +1,5 @@
 import pygame
-from DSEngine.etypes import Rect2D, Window, key_to_scancode
+from DSEngine.etypes import Image2D,Rect2D, Window, key_to_scancode
 from pygame.locals import *
 pygame.font.init()
 
@@ -25,15 +25,20 @@ class Text2D(Rect2D):
         #print("Sprite2D render done")
 
 class Button(Rect2D):
-    def __init__(self, text: str, layer="GUI", position=pygame.Vector2(0.0, 0.0), font = pygame.font.SysFont('freesans', 40),size=pygame.Vector2(0,0)):#, size=pygame.Vector2(0.0, 0.0)):
+    def __init__(self, text: str,image="", layer="GUI", position=pygame.Vector2(0.0, 0.0), font = pygame.font.SysFont('freesans', 40),size=pygame.Vector2(0,0)):#, size=pygame.Vector2(0.0, 0.0)):
         self.debug = False
         self.layer = layer
         self.position = position
         self.pressed = False
         self.hovered = False
+        self.imagesurface=None
+        if image!="":
+            self.imagesurface=Image2D(image)
+            self.imagesurface.position=self.position
         #self.rect = pygame.Rect(position.x, position.y, position.x+size.x, position.x+size.y)
         self.text = text
         self.font = font
+        
         self.text_surface = self.font.render(self.text, False, (255, 255, 255))
         self.color_rect = self.text_surface.get_rect()
         self.color_rect.topleft = (position.x ,position.y)
@@ -55,8 +60,17 @@ class Button(Rect2D):
             self.pressed = False
         if self.visible:
             self.rect.topleft = (self.position.x+self.collisionoffset.x+window.current_camera.position.x, self.position.y+self.collisionoffset.y+window.current_camera.position.y)
-            pygame.draw.rect(window.surface, (0, 255, 0), self.color_rect)
+            
+            if self.imagesurface!=None:
+                self.imagesurface.render(window)
+            else:
+                pygame.draw.rect(window.surface, (0, 0, 0), self.color_rect)
+            
             window.surface.blit(self.text_surface, (self.position.x, self.position.y))
+    def init(self,window):
+        super().init(window)
+        if self.imagesurface!=None:
+            self.imagesurface.init(window)
         #print("Sprite2D render done")
 
 class DialougeBox(Rect2D):
