@@ -4,13 +4,14 @@ from pygame.locals import *
 pygame.font.init()
 
 class Text2D(Rect2D):
-    def __init__(self, text: str, layer="GUI", position=pygame.Vector2(0.0, 0.0), font=pygame.font.SysFont('freesans', 40)):#, size=pygame.Vector2(0.0, 0.0)):
+    def __init__(self, text: str, layer="GUI",color=(255,255,255), position=pygame.Vector2(0.0, 0.0), font=pygame.font.SysFont('freesans', 40)):#, size=pygame.Vector2(0.0, 0.0)):
         self.debug = False
         self.layer = layer
         self.position = position
         self.text = text
         self.font = font
-        self.text_surface = self.font.render(self.text, False, (255, 255, 255))
+        self.color=color
+        self.text_surface = self.font.render(self.text, False, color)
         self.color_rect = self.text_surface.get_rect()
         self.color_rect.topleft = (position.x-(self.color_rect.size[0]/2), position.y-(self.color_rect.size[1]/2))
         #self.rect = self.text_surface.get_rect()
@@ -23,6 +24,8 @@ class Text2D(Rect2D):
         if self.visible:
             window.surface.blit(self.text_surface, (self.position.x, self.position.y))
         #print("Sprite2D render done")
+    def update(self):
+        self.text_surface=self.font.render(self.text, False, self.color)
 
 class Button(Rect2D):
     def __init__(self, text: str,image="", layer="GUI", position=pygame.Vector2(0.0, 0.0), font = pygame.font.SysFont('freesans', 40),size=pygame.Vector2(0,0)):#, size=pygame.Vector2(0.0, 0.0)):
@@ -40,7 +43,7 @@ class Button(Rect2D):
         self.font = font
         
         self.text_surface = self.font.render(self.text, False, (255, 255, 255))
-        self.color_rect = self.text_surface.get_rect()
+        self.color_rect = self.text_surface.get_rect() if self.text_surface.get_rect()>self.imagesurface.rect else self.imagesurface.rect
         self.color_rect.topleft = (position.x ,position.y)
         if size!=pygame.Vector2(0,0):
             self.color_rect.size=size
