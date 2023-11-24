@@ -27,6 +27,7 @@ class Tile(Type2D):
 
 class TileMap(Type2D):
     def __init__(self, layer=10, position=Vector2(0.0, 0.0), tile_size=Vector2(32, 32), rotation=0):
+        self.area = False
         self.tile_size = tile_size
         self.tiles = []
         super().__init__(layer, position, rotation)
