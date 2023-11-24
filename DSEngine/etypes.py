@@ -1,6 +1,6 @@
 import pygame, sys
 from .camera import Camera2D
-from .tiles import TileMap
+import tiles
 
 def key_to_scancode(key: str):
     return pygame.key.key_code(key)
@@ -119,7 +119,7 @@ class Rect2D(Type2D):
             self.collision_sides = {"left":False, "right":False,
                                     "bottom":False, "top":False}
             for i in self.window.layers[self.layer]:
-                if type(i) == TileMap:
+                if type(i) == tiles.TileMap:
                     i.collisions()
                 else:
                     self.detect_colision(i)
