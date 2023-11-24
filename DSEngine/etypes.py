@@ -107,7 +107,7 @@ class Rect2D(Type2D):
       return self.collision_sides["top"]
     
     def detect_collisions(self):
-        if self.collision:
+        if self.collision and self.window!=None:
             self.collision_sides = {"left":False, "right":False,
                                     "bottom":False, "top":False}
             for i in self.window.layers[self.layer]:
@@ -242,6 +242,7 @@ class Image2D(Rect2D):
         super().__init__(layer=self.layer, position=self.position)
         
         self.rect = self.image.get_rect()
+        self.size=pygame.Vector2(self.rect.size)
         self.collisionoffset=offset
         self.rect.x += self.collisionoffset.x
         self.rect.y += self.collisionoffset.y
