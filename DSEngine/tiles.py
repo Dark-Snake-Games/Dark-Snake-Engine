@@ -11,6 +11,7 @@ class Tile(Type2D):
         super().__init__(layer, position, 0)
         self.text_pos = Vector2((self.position.x*self.parent.tile_size.x), (self.position.y*self.parent.tile_size.y))
         self.texture = Image2D(texture, parent.layer, position=self.text_pos)
+        self.rect = self.texture.rect
     
     def render(self, window: Window):
         self.texture.window = window
@@ -32,6 +33,10 @@ class TileMap(Type2D):
         self.tile_size = tile_size
         self.tiles = []
         super().__init__(layer, position, rotation)
+    
+    def collisions(self, rect2):
+        for i in self.tiles:
+            rect2.detect_collision(i.texture)
     
     def import_tilemap(self, filename="tilemap.sav"):
         data = load(filename)
