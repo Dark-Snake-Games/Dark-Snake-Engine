@@ -1,6 +1,6 @@
 import pygame
 from pygame import Vector2
-from etypes import *
+from DSEngine.etypes import *
 from .saving import *
 
 class Tile(Type2D):
