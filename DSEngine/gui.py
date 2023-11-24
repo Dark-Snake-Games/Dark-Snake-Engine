@@ -43,7 +43,13 @@ class Button(Rect2D):
         self.font = font
         
         self.text_surface = self.font.render(self.text, False, (255, 255, 255))
-        self.color_rect = self.text_surface.get_rect() if self.text_surface.get_rect()>self.imagesurface.rect else self.imagesurface.rect
+        if self.imagesurface!=None:
+            if self.text_surface.get_rect()>self.imagesurface.rect:
+                self.color_rect = self.text_surface.get_rect()
+            else:
+                self.color_rect=self.imagesurface.rect
+        else:
+            self.color_rect = self.text_surface.get_rect()
         self.color_rect.topleft = (position.x ,position.y)
         if size!=pygame.Vector2(0,0):
             self.color_rect.size=size
