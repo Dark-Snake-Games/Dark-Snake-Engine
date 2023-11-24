@@ -1,6 +1,6 @@
 import pygame, sys
 from .camera import Camera2D
-import tiles
+import DSEngine.tiles
 
 def key_to_scancode(key: str):
     return pygame.key.key_code(key)
