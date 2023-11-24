@@ -1,6 +1,6 @@
 import pygame
 from pygame import Vector2
-from .etypes import Type2D, Window, Image2D
+from DSEngine.etypes import *
 from .saving import *
 
 class Tile(Type2D):
@@ -10,9 +10,10 @@ class Tile(Type2D):
         self.layer = layer
         super().__init__(layer, position, 0)
         self.text_pos = Vector2((self.position.x*self.parent.tile_size.x), (self.position.y*self.parent.tile_size.y))
-        self.texture = Image2D(texture, parent.layer, position=self.text_pos)
+        self.texture = etypes.Image2D(texture, parent.layer, position=self.text_pos)
+        self.rect = self.texture.rect
     
-    def render(self, window: Window):
+    def render(self, window: etypes.Window):
         self.texture.window = window
         self.texture.render(window)
         super().render(window)
@@ -25,13 +26,17 @@ class Tile(Type2D):
         data["layer"] = self.layer
         return data
 
-class TileMap(Type2D):
+class TileMap(etypes.Type2D):
     def __init__(self, layer=10, position=Vector2(0.0, 0.0), tile_size=Vector2(32, 32), rotation=0):
         self.collision = True
         self.area = False
         self.tile_size = tile_size
         self.tiles = []
         super().__init__(layer, position, rotation)
+    
+    def collisions(self, rect2):
+        for i in self.tiles:
+            rect2.detect_collision(i.texture)
     
     def import_tilemap(self, filename="tilemap.sav"):
         data = load(filename)
@@ -54,7 +59,7 @@ class TileMap(Type2D):
         tile = Tile(self, layer, position, tile_texture)
         self.tiles.append(tile)
     
-    def render(self, window: Window):
+    def render(self, window: etypes.Window):
         for tile in self.tiles:
             tile.render(window)
         super().render(window)
