@@ -1,9 +1,9 @@
 import pygame
 from pygame import Vector2
-from DSEngine.etypes import *
+import DSEngine.etypes as etypes
 from .saving import *
 
-class Tile(Type2D):
+class Tile(etypes.Type2D):
     def __init__(self, parent, layer=10, position=Vector2(0, 0), texture=""):
         self.parent = parent
         self.filename = texture
