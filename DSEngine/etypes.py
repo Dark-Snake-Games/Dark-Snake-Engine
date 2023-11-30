@@ -305,7 +305,8 @@ class Area2D(Rect2D):
     def render(self, window: Window):
         if self.visible:
             self.rect.topleft = (self.position.x+self.collisionoffset.x+window.current_camera.position.x, self.position.y+self.collisionoffset.y+window.current_camera.position.y)
-            #window.surface.blit(self.image, self.rect)
+
+            # window.surface.blit(self.image, self.rect)
             self.detect_collisions()
             if self.debug:
                 super().render(window)

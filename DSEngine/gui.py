@@ -16,6 +16,7 @@ class Text2D(Rect2D):
         self.color_rect.topleft = (position.x-(self.color_rect.size[0]/2), position.y-(self.color_rect.size[1]/2))
         #self.rect = self.text_surface.get_rect()
         super().__init__(layer=self.layer, position=self.position)
+        self.size=pygame.Vector2(self.color_rect.size)
         #print("Initialized super()")
     
     def render(self, window: Window):
@@ -28,7 +29,7 @@ class Text2D(Rect2D):
         self.text_surface=self.font.render(self.text, False, self.color)
 
 class Button(Rect2D):
-    def __init__(self, text: str,image="", layer="GUI", position=pygame.Vector2(0.0, 0.0), font = pygame.font.SysFont('freesans', 40),size=pygame.Vector2(0,0)):#, size=pygame.Vector2(0.0, 0.0)):
+    def __init__(self, text: str,image="", layer="GUI", position=pygame.Vector2(0.0, 0.0), font = pygame.font.SysFont('freesans', 40),size=pygame.Vector2(0,0),color=(0,0,0)):#, size=pygame.Vector2(0.0, 0.0)):
         self.debug = False
         self.layer = layer
         self.position = position
@@ -54,10 +55,11 @@ class Button(Rect2D):
         if size!=pygame.Vector2(0,0):
             self.color_rect.size=size
         #self.rect = self.text_surface.get_rect()
-        super().__init__(layer=self.layer, position=self.position)
+        super().__init__(layer=self.layer, position=self.position,color=color)
         #print("Initialized super()")
     
     def render(self, window: Window):
+        self.color_rect.topleft=self.position
         if self.color_rect.collidepoint(window.get_mouse_pos()):
             self.hovered = True
         else:
@@ -73,7 +75,7 @@ class Button(Rect2D):
             if self.imagesurface!=None:
                 self.imagesurface.render(window)
             else:
-                pygame.draw.rect(window.surface, (0, 0, 0), self.color_rect)
+                pygame.draw.rect(window.surface, self.color, self.color_rect)
             
             window.surface.blit(self.text_surface, (self.position.x, self.position.y))
     def init(self,window):
