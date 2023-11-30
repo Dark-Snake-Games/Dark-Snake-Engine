@@ -266,7 +266,7 @@ class Image2D(Rect2D):
             self.rect.y += self.collisionoffset.y
 
 class Area2D(Rect2D):
-    def __init__(self, layer: int = 0, position=pygame.Vector2(0.0, 0.0), size=pygame.Vector2(0.0, 0.0)):#, size=pygame.Vector2(0.0, 0.0)):
+    def __init__(self, layer: int = 1, position=pygame.Vector2(0.0, 0.0), size=pygame.Vector2(0.0, 0.0)):#, size=pygame.Vector2(0.0, 0.0)):
         self.sprite = pygame.sprite.Sprite()
         self.debug = False
         self.layer = layer
@@ -292,7 +292,7 @@ class Area2D(Rect2D):
     def render(self, window: Window):
         if self.visible:
             self.rect.topleft = (self.position.x+self.collisionoffset.x+window.current_camera.position.x, self.position.y+self.collisionoffset.y+window.current_camera.position.y)
-            window.surface.blit(self.image, self.rect)
+            # window.surface.blit(self.image, self.rect)
             self.detect_collisions()
             if self.debug:
                 super().render(window)
