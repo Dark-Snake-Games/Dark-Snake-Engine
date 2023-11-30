@@ -1,5 +1,6 @@
 import pygame, sys
 from .camera import Camera2D
+#from .tiles import TileMap
 
 def key_to_scancode(key: str):
     return pygame.key.key_code(key)
@@ -105,9 +106,16 @@ class Rect2D(Type2D):
 
     def is_on_ceiling(self):
       return self.collision_sides["top"]
+
+    #def detect_collision(self, i):
+        #if i != self and "type(i) == Rect2D" and not i.area and i.collision:
+            #side = self.get_collision_side(i)
+            #if side != None:
+                #self.collision_sides[side] = True
+
     
     def detect_collisions(self):
-        if self.collision and self.window!=None:
+        if self.collision and self.window != None:
             self.collision_sides = {"left":False, "right":False,
                                     "bottom":False, "top":False}
             for i in self.window.layers[self.layer]:
@@ -115,6 +123,11 @@ class Rect2D(Type2D):
                     side = self.get_collision_side(i)
                     if side != None:
                         self.collision_sides[side] = True
+
+                #if type(i) == TileMap:
+                    #i.collisions()
+                #else:
+                #self.detect_colision(i)
         
     def get_collision_side(self, rect2):
         if self.is_colliding_with(rect2):
@@ -292,6 +305,7 @@ class Area2D(Rect2D):
     def render(self, window: Window):
         if self.visible:
             self.rect.topleft = (self.position.x+self.collisionoffset.x+window.current_camera.position.x, self.position.y+self.collisionoffset.y+window.current_camera.position.y)
+
             # window.surface.blit(self.image, self.rect)
             self.detect_collisions()
             if self.debug:
