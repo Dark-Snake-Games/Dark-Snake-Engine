@@ -333,10 +333,8 @@ class AudioPlayer:
 
     def play(self):
         self.chan.queue(self.f)
-    
     def pause(self):
         self.chan.pause()
-    
     def resume(self):
         self.chan.unpause()
 
