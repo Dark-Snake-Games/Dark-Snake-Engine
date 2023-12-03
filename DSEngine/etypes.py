@@ -327,8 +327,14 @@ class AudioManager:
 
 class AudioPlayer:
     def __init__(self, file: str) -> None:
-        pygame.mixer.music.load(file)
-    
+        self.f = pygame.mixer.Sound(file)
+        self.chan = pygame.mixer.find_channel()
+        self.chan.queue(self.f)
+
     def play(self):
-        pygame.mixer.music.play()
+        self.chan.queue(self.f)
+    def pause(self):
+        self.chan.pause()
+    def resume(self):
+        self.chan.unpause()
 
