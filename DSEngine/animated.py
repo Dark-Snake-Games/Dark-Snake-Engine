@@ -55,6 +55,7 @@ class AnimatedSprite2D(Rect2D):
         self.sheet_length = -1
         self.playing = False
         self.moving_towards = False
+        self.m_speed = 0
         self.collisionoffset=offset
         self.image = self.sprites.default.image
         if size==None:
@@ -76,11 +77,12 @@ class AnimatedSprite2D(Rect2D):
         self.sheet_length = len(self.current_sheet.sheet)
         self.playing = True
     
-    def move_towards(self, pos=pygame.Vector2()):
+    def move_towards(self, pos=pygame.Vector2(), speed=10):
         self.steps = max(abs(pos.x-self.position.x), abs(pos.y-self.position.y))
         self.stepx = float(pos.x-self.position.x)/self.steps
         self.stepy = float(pos.y-self.position.y)/self.steps
         self.step = 0
+        self.m_speed = speed
         self.moving_towards = True
     
     def render(self, window: Window):
@@ -88,7 +90,7 @@ class AnimatedSprite2D(Rect2D):
             self.detect_collisions()
             self.rect.topleft = (self.position.x+self.collisionoffset.x+window.current_camera.position.x, self.position.y+self.collisionoffset.y+window.current_camera.position.y)
             if self.moving_towards:
-                vel = pygame.Vector2(self.stepx, self.stepy)
+                vel = pygame.Vector2(self.stepx, self.stepy)*self.m_speed*window.delta
                 self.move(vel)
                 self.step += 1
                 if self.step >= self.steps: self.moving_towards = False
