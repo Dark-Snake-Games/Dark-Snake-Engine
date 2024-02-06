@@ -1,6 +1,6 @@
 import pygame, sys
 from .camera import Camera2D
-#from .tiles import TileMap
+from .tiles import TileMap
 
 def key_to_scancode(key: str):
     return pygame.key.key_code(key)
@@ -99,7 +99,25 @@ class Rect2D(Type2D):
         self.rect = pygame.Rect(position.x+self.collisionoffset.x, position.y+self.collisionoffset.y, size.x, size.y)
         self.collision_sides = {"left":False, "right":False,
                                 "bottom":False, "top":False}
+        self.tweens=[]
         super().__init__(layer=self.layer, position=self.position)
+
+    class Tween:
+        def __init__(self,handler,start,end,time) -> None:
+            self.start=start
+            self.end=end
+            self.handler=handler
+            self.time=time
+            self.rem_time=time
+        def run(self,fps):
+            self.rem_time-=1/fps
+            process=self.rem_time/self.time
+            difference=self.end-self.start
+            val=(difference*process)+self.start
+            self.handler(val)
+
+    def tween(self,handler,start,end,time):
+        self.tweens.append(self.Tween(handler,start,end,time))
 
     def is_on_floor(self):
       return self.collision_sides["bottom"]
@@ -119,15 +137,15 @@ class Rect2D(Type2D):
             self.collision_sides = {"left":False, "right":False,
                                     "bottom":False, "top":False}
             for i in self.window.layers[self.layer]:
-                if i != self and "type(i) == Rect2D" and not i.area and i.collision:
-                    side = self.get_collision_side(i)
-                    if side != None:
-                        self.collision_sides[side] = True
+                
 
-                #if type(i) == TileMap:
-                    #i.collisions()
-                #else:
-                #self.detect_colision(i)
+                if isinstance(i,TileMap):
+                    i.collisions()
+                else:
+                    if i != self and "type(i) == Rect2D" and not i.area and i.collision:
+                        side = self.get_collision_side(i)
+                        if side != None:
+                            self.collision_sides[side] = True
         
     def get_collision_side(self, rect2):
         if self.is_colliding_with(rect2):
@@ -153,6 +171,8 @@ class Rect2D(Type2D):
             self.rect.topleft = (self.position.x+self.collisionoffset.x+window.current_camera.position.x, self.position.y+self.collisionoffset.y+window.current_camera.position.y)
             pygame.draw.rect(window.surface, self.color, self.rect)
             super().render(window)
+            for e in self.tweens:
+                e.run()
     
     def is_moving(self):
         return self.prev_pos == self.position
